@@ -1,0 +1,4 @@
+rootProject.name = 'commons-utils'
+include 'commons-configuration'
+include 'commons-language'
+

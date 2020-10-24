@@ -1,0 +1,14 @@
+dependencies {
+    api("commons-lang:commons-lang:2.6")
+    api("com.google.guava:guava:22.0")
+    implementation("org.jetbrains:annotations-java5:19.0.0")
+    api("org.yaml:snakeyaml:1.26")
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('org.jetbrains:annotations-java5:19.0.0'))
+    }
+    relocate("org.bukkit.configuration", "me.scoretwo.utils.configuration")
+    archiveFileName = "${project.name}-${project.version}.jar"
+}
