@@ -35,4 +35,9 @@ subprojects {
     dependencies {
         api("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
     }
+
+    artifacts {
+        archives shadowJar
+        archives install
+    }
 }
