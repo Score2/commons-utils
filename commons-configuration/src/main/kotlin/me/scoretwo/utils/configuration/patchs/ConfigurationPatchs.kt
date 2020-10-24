@@ -13,12 +13,13 @@ fun File.saveConfiguration(yamlConfiguration: YamlConfiguration) {
     yamlConfiguration.save(this)
 }
 
+val ConfigurationSection.keys: List<String> get() = getKeys(false).toList()
+
 fun ConfigurationSection.getLowerCaseNode(lowerCasePath: String): String {
     val isMultiPath = lowerCasePath.contains(".")
     val firstNode = if (!isMultiPath) lowerCasePath else lowerCasePath.substring(0, lowerCasePath.indexOf(".") - 1)
-
     for (node in getKeys(false)) {
-        if (firstNode == node.toLowerCase()) {
+        if (firstNode.toLowerCase() == node.toLowerCase()) {
             return if (!isMultiPath) {
                 node
             } else {
@@ -28,7 +29,23 @@ fun ConfigurationSection.getLowerCaseNode(lowerCasePath: String): String {
             }
         }
     }
+    return ""
+}
 
+fun ConfigurationSection.getUpperCaseNode(lowerCasePath: String): String {
+    val isMultiPath = lowerCasePath.contains(".")
+    val firstNode = if (!isMultiPath) lowerCasePath else lowerCasePath.substring(0, lowerCasePath.indexOf(".") - 1)
+    for (node in getKeys(false)) {
+        if (firstNode.toUpperCase() == node.toUpperCase()) {
+            return if (!isMultiPath) {
+                node
+            } else {
+                val afterNode = lowerCasePath.substring(lowerCasePath.indexOf("."))
+
+                "${node}.${getLowerCaseNode(afterNode)}"
+            }
+        }
+    }
     return ""
 }
 
