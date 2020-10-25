@@ -38,6 +38,5 @@ subprojects {
 
     artifacts {
         archives shadowJar
-        archives install
     }
 }

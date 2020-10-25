@@ -15,38 +15,22 @@ fun File.saveConfiguration(yamlConfiguration: YamlConfiguration) {
 
 val ConfigurationSection.keys: List<String> get() = getKeys(false).toList()
 
-fun ConfigurationSection.getLowerCaseNode(lowerCasePath: String): String {
-    val isMultiPath = lowerCasePath.contains(".")
-    val firstNode = if (!isMultiPath) lowerCasePath else lowerCasePath.substring(0, lowerCasePath.indexOf(".") - 1)
-    for (node in getKeys(false)) {
-        if (firstNode.toLowerCase() == node.toLowerCase()) {
-            return if (!isMultiPath) {
-                node
-            } else {
-                val afterNode = lowerCasePath.substring(lowerCasePath.indexOf("."))
-
-                "${node}.${getLowerCaseNode(afterNode)}"
-            }
+fun ConfigurationSection.getLowerCaseNode(path: String): String {
+    for (node in getKeys(true)) {
+        if (node.toLowerCase() == path.toLowerCase()) {
+            return node
         }
     }
-    return ""
+    return path
 }
 
-fun ConfigurationSection.getUpperCaseNode(lowerCasePath: String): String {
-    val isMultiPath = lowerCasePath.contains(".")
-    val firstNode = if (!isMultiPath) lowerCasePath else lowerCasePath.substring(0, lowerCasePath.indexOf(".") - 1)
-    for (node in getKeys(false)) {
-        if (firstNode.toUpperCase() == node.toUpperCase()) {
-            return if (!isMultiPath) {
-                node
-            } else {
-                val afterNode = lowerCasePath.substring(lowerCasePath.indexOf("."))
-
-                "${node}.${getLowerCaseNode(afterNode)}"
-            }
+fun ConfigurationSection.getUpperCaseNode(path: String): String {
+    for (node in getKeys(true)) {
+        if (node.toUpperCase() == path.toUpperCase()) {
+            return node
         }
     }
-    return ""
+    return path
 }
 
 fun ConfigurationSection.getConfigurationSectionList(path: String): List<ConfigurationSection>? {

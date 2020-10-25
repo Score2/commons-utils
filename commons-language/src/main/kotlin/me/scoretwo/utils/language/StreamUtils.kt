@@ -2,9 +2,22 @@ package me.scoretwo.utils.language
 
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.io.InputStream
+import java.net.URL
 
 object StreamUtils {
+
+    fun getResource(filename: String): InputStream? {
+        return try {
+            val url: URL = javaClass.classLoader.getResource(filename) ?: return null
+            val connection = url.openConnection()
+            connection.useCaches = false
+            connection.getInputStream()
+        } catch (ex: IOException) {
+            null
+        }
+    }
 
     fun readString(inputStream: InputStream): String {
         val result = ByteArrayOutputStream()
