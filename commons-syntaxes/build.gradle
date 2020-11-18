@@ -1,0 +1,10 @@
+dependencies {
+    implementation("org.jetbrains:annotations-java5:19.0.0")
+}
+
+shadowJar {
+    dependencies {
+        include(dependency('org.jetbrains:annotations-java5:19.0.0'))
+    }
+    archiveFileName = "${project.name}-${project.version}.jar"
+}

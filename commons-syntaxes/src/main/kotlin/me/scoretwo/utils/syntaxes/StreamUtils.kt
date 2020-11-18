@@ -1,4 +1,4 @@
-package me.scoretwo.utils.language
+package me.scoretwo.utils.syntaxes
 
 import java.io.BufferedReader
 import java.io.ByteArrayOutputStream

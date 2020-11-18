@@ -1,4 +1,4 @@
-package me.scoretwo.utils.language
+package me.scoretwo.utils.syntaxes
 
 import java.io.*
 import java.net.URL
