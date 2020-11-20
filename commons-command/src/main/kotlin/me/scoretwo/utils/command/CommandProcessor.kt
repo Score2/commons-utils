@@ -4,14 +4,12 @@ import net.md_5.bungee.api.chat.BaseComponent
 
 interface CommandProcessor {
 
-    fun conversionSender()
+    fun sendMessage(sender: Any, string: String)
 
-    fun sendMessage(string: String)
+    fun hasPermission(sender: Any, permission: String): Boolean
 
-    fun hasPermission(permission: String): Boolean
+    fun sendMessage(sender: Any, component: BaseComponent)
 
-    fun sendMessage(component: BaseComponent)
-
-    fun getName(): String
+    fun getName(sender: Any): String
 
 }

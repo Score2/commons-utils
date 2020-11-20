@@ -50,19 +50,19 @@ abstract class SubCommand(val alias: Array<out String>,
 
 
     fun Any.sendMessage(string: String) {
-        processor.sendMessage(string)
+        processor.sendMessage(this, string)
     }
 
     fun Any.sendMessage(component: BaseComponent) {
-        processor.sendMessage(component)
+        processor.sendMessage(this, component)
     }
 
     fun Any.hasPermission(permission: String): Boolean {
-        return processor.hasPermission(permission)
+        return processor.hasPermission(this, permission)
     }
 
     fun Any.getName(): String {
-        return processor.getName()
+        return processor.getName(this)
     }
 
 }
