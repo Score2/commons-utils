@@ -1,7 +1,5 @@
 package org.bukkit.configuration;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Various settings for controlling the input and output of a {@link
  * Configuration}
@@ -11,7 +9,7 @@ public class ConfigurationOptions {
     private boolean copyDefaults = false;
     private final Configuration configuration;
 
-    protected ConfigurationOptions(@NotNull Configuration configuration) {
+    protected ConfigurationOptions(Configuration configuration) {
         this.configuration = configuration;
     }
 
@@ -20,7 +18,6 @@ public class ConfigurationOptions {
      *
      * @return Parent configuration
      */
-    @NotNull
     public Configuration configuration() {
         return configuration;
     }
@@ -48,7 +45,6 @@ public class ConfigurationOptions {
      * @param value Path separator
      * @return This object, for chaining
      */
-    @NotNull
     public ConfigurationOptions pathSeparator(char value) {
         this.pathSeparator = value;
         return this;
@@ -87,7 +83,6 @@ public class ConfigurationOptions {
      * @param value Whether or not defaults are directly copied
      * @return This object, for chaining
      */
-    @NotNull
     public ConfigurationOptions copyDefaults(boolean value) {
         this.copyDefaults = value;
         return this;

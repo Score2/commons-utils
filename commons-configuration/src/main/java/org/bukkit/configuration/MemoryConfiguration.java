@@ -1,8 +1,6 @@
 package org.bukkit.configuration;
 
 import org.apache.commons.lang.Validate;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -27,12 +25,12 @@ public class MemoryConfiguration extends MemorySection implements Configuration 
      * @param defaults Default value provider
      * @throws IllegalArgumentException Thrown if defaults is null
      */
-    public MemoryConfiguration(@Nullable Configuration defaults) {
+    public MemoryConfiguration(Configuration defaults) {
         this.defaults = defaults;
     }
 
     @Override
-    public void addDefault(@NotNull String path, @Nullable Object value) {
+    public void addDefault(String path, Object value) {
         Validate.notNull(path, "Path may not be null");
 
         if (defaults == null) {
@@ -43,7 +41,7 @@ public class MemoryConfiguration extends MemorySection implements Configuration 
     }
 
     @Override
-    public void addDefaults(@NotNull Map<String, Object> defaults) {
+    public void addDefaults(Map<String, Object> defaults) {
         Validate.notNull(defaults, "Defaults may not be null");
 
         for (Map.Entry<String, Object> entry : defaults.entrySet()) {
@@ -52,33 +50,30 @@ public class MemoryConfiguration extends MemorySection implements Configuration 
     }
 
     @Override
-    public void addDefaults(@NotNull Configuration defaults) {
+    public void addDefaults(Configuration defaults) {
         Validate.notNull(defaults, "Defaults may not be null");
 
         addDefaults(defaults.getValues(true));
     }
 
     @Override
-    public void setDefaults(@NotNull Configuration defaults) {
+    public void setDefaults(Configuration defaults) {
         Validate.notNull(defaults, "Defaults may not be null");
 
         this.defaults = defaults;
     }
 
     @Override
-    @Nullable
     public Configuration getDefaults() {
         return defaults;
     }
 
-    @Nullable
     @Override
     public ConfigurationSection getParent() {
         return null;
     }
 
     @Override
-    @NotNull
     public MemoryConfigurationOptions options() {
         if (options == null) {
             options = new MemoryConfigurationOptions(this);

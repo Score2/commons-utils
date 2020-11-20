@@ -14,7 +14,7 @@ plugins {
     id 'java'
 }
 
-defaultTasks 'shadowJar', 'install'
+defaultTasks 'publishToMavenLocal'
 
 allprojects {
     repositories {
@@ -32,11 +32,7 @@ subprojects {
     group 'me.scoretwo'
     version '1.0-SNAPSHOT'
 
-    dependencies {
-        api("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
-    }
-
-    artifacts {
-        archives shadowJar
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allSource
     }
 }

@@ -1,10 +1,19 @@
 dependencies {
-    implementation("org.jetbrains:annotations-java5:19.0.0")
+
 }
 
 shadowJar {
     dependencies {
-        include(dependency('org.jetbrains:annotations-java5:19.0.0'))
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
     }
-    archiveFileName = "${project.name}-${project.version}.jar"
+    archiveClassifier = null
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
 }
