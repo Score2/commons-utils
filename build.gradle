@@ -30,7 +30,7 @@ subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     group 'me.scoretwo'
-    version '1.1-SNAPSHOT'
+    version '1.2-SNAPSHOT'
 
     task sourceJar(type: Jar) {
         from sourceSets.main.allSource

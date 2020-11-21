@@ -6,11 +6,11 @@ open class CommandNexus(vararg alias: String, processor: CommandProcessor): SubC
 
     }
 
-    override fun executed(sender: Any, parents: Array<String>, label: String, args: Array<String>): Boolean {
+    override fun executed(sender: Any, parents: Array<String>, args: Array<String>): Boolean {
         return true
     }
 
-    override fun tabCompleted(sender: Any, parents: Array<String>, label: String, args: Array<String>): MutableList<String> {
+    override fun tabCompleted(sender: Any, parents: Array<String>, args: Array<String>): MutableList<String> {
         return mutableListOf()
     }
 
