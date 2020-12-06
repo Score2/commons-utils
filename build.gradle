@@ -16,11 +16,15 @@ plugins {
 
 defaultTasks 'publishToMavenLocal'
 
+task pushToPath(type: Copy) {
+    from 'C:/Users/Administrator/.m2/repository/me'
+    into 'D:/php/PHPTutorial/WWW/maven-repositories/me'
+}
+
 allprojects {
     repositories {
         mavenCentral()
-    }
-}
+    }}
 
 subprojects {
     apply plugin: 'java'
@@ -30,9 +34,13 @@ subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
 
     group 'me.scoretwo'
-    version '1.2-SNAPSHOT'
+    version '1.22-SNAPSHOT'
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
 
     task sourceJar(type: Jar) {
         from sourceSets.main.allSource
     }
+
 }
