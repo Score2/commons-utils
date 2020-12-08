@@ -5,11 +5,11 @@ buildscript {
     }
     dependencies {
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21"
     }
 }
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'java'
 }
