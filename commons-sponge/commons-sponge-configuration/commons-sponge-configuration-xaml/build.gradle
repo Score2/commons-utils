@@ -1,0 +1,21 @@
+dependencies {
+    implementation 'org.spongepowered:configurate-xml:4.0.0'
+}
+
+shadowJar {
+    dependencies {
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
+        include(dependency("org.spongepowered:configurate-xml:4.0.0"))
+    }
+    relocate("org.spongepowered.configurate", "me.scoretwo.utils.sponge.configuration")
+
+    archiveClassifier = null
+}
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+}

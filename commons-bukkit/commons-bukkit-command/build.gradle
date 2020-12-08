@@ -1,0 +1,19 @@
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    dependencies {
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
+    }
+
+    archiveClassifier = null
+}
+publishing {
+    publications {
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
+        }
+    }
+}

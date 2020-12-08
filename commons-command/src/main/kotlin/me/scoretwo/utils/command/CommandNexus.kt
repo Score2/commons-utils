@@ -1,6 +1,6 @@
 package me.scoretwo.utils.command
 
-open class CommandNexus(vararg alias: String, processor: CommandProcessor): SubCommand(alias, processor) {
+open class CommandNexus(alias: Array<String>, processor: CommandProcessor): SubCommand(alias, processor) {
 
     init {
 

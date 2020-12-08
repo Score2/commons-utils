@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath("com.github.jengelman.gradle.plugins:shadow:5.2.0")
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.20"
     }
 }
 plugins {
@@ -13,18 +13,19 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'java'
 }
+if (new File("options.gradle").exists()) {
+    apply from: 'options.gradle'
+}
 
 defaultTasks 'publishToMavenLocal'
 
-task pushToPath(type: Copy) {
-    from 'C:/Users/Administrator/.m2/repository/me'
-    into 'D:/php/PHPTutorial/WWW/maven-repositories/me'
-}
-
 allprojects {
     repositories {
+        jcenter()
         mavenCentral()
-    }}
+        mavenLocal()
+    }
+}
 
 subprojects {
     apply plugin: 'java'
@@ -33,11 +34,16 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'com.github.johnrengelman.shadow'
 
-    group 'me.scoretwo'
-    version '1.22-SNAPSHOT'
+    group "me.scoretwo"
+    version "2.0-SNAPSHOT"
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+
+    dependencies {
+        testImplementation "com.andreapivetta.kolor:kolor:1.0.0"
+        testImplementation 'junit:junit:4.13.1'
+    }
 
     task sourceJar(type: Jar) {
         from sourceSets.main.allSource

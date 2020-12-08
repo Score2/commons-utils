@@ -4,7 +4,7 @@ import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
 import net.md_5.bungee.api.chat.BaseComponent
 
-abstract class SubCommand(val alias: Array<out String>,
+abstract class SubCommand(val alias: Array<String>,
                           private val processor: CommandProcessor,
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
 ) {
@@ -21,18 +21,24 @@ abstract class SubCommand(val alias: Array<out String>,
             return true
         }
 
-        parents[parents.size + 1] = args[0]
-        val rearArgs = arrayOf<String>()
+        val parentsEditor = parents.toMutableList()
+        parentsEditor[parents.size + 1] = args[0]
+        val rearArgs = mutableListOf<String>()
 
         for (i in 1 until args.size) {
             rearArgs[i - 1] = args[i]
         }
 
-        val subCommand = findSubCommand(args[0]) ?: return executed(sender, parents, rearArgs)
+        val subCommand = findSubCommand(args[0]) ?: return executed(sender, parentsEditor.toTypedArray(), rearArgs.toTypedArray())
 
-        return subCommand.execute(sender, parents, rearArgs)
+        return subCommand.execute(sender, parentsEditor.toTypedArray(), rearArgs.toTypedArray())
     }
 
+
+    /**
+     * subCommand list + tabCompleted list to return
+     * 方法参考 FastScript
+     */
     fun tabComplete(sender: Any, parents: Array<String>, args: Array<String>): MutableList<String> {
         return mutableListOf()
     }
