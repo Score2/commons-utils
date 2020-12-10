@@ -9,6 +9,10 @@ include 'commons-bukkit'
     include 'commons-bukkit:commons-bukkit-command'
     findProject(':commons-bukkit:commons-bukkit-command')?.name = 'commons-bukkit-command'
 
+include 'commons-bungee'
+    include 'commons-bungee:commons-bungee-command'
+    findProject(':commons-bungee:commons-bungee-command')?.name = 'commons-bungee-command'
+
 include 'commons-sponge'
     include 'commons-sponge:commons-sponge-configuration'
     findProject(':commons-sponge:commons-sponge-configuration')?.name = 'commons-sponge-configuration'

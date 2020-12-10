@@ -11,7 +11,7 @@ abstract class SubCommand(val alias: Array<String>,
 
     open var subCommands = mutableListOf<SubCommand>()
 
-    fun execute(sender: Any, parents: Array<String>, args: Array<String>): Boolean {
+    fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
         if (!sender.hasPermission("${toNode(parents)}.use")) {
             return true
         }
@@ -39,15 +39,15 @@ abstract class SubCommand(val alias: Array<String>,
      * subCommand list + tabCompleted list to return
      * 方法参考 FastScript
      */
-    fun tabComplete(sender: Any, parents: Array<String>, args: Array<String>): MutableList<String> {
+    fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
         return mutableListOf()
     }
 
-    open fun executed(sender: Any, parents: Array<String>, args: Array<String>): Boolean {
+    open fun executed(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
         return false
     }
 
-    open fun tabCompleted(sender: Any, parents: Array<String>, args: Array<String>): MutableList<String> {
+    open fun tabCompleted(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
         return mutableListOf()
     }
 
@@ -60,7 +60,7 @@ abstract class SubCommand(val alias: Array<String>,
         return null
     }
 
-
+/*
     fun Any.sendMessage(string: String) {
         processor.sendMessage(this, string)
     }
@@ -75,7 +75,7 @@ abstract class SubCommand(val alias: Array<String>,
 
     fun Any.getName(): String {
         return processor.getName(this)
-    }
+    }*/
 
     private fun toNode(array: Array<String>): String {
         var string = ""
