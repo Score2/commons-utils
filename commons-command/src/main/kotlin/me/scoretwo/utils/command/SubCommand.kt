@@ -17,7 +17,7 @@ abstract class SubCommand(val alias: Array<String>,
         }
 
         if (args.isEmpty()) {
-            helpGenerator.translateTexts(parents, args)[0].forEach { sender.sendMessage(it) }
+            helpGenerator.translateTexts(parents, args)[0].forEach { sender.sendMessage(it.text) }
             return true
         }
 

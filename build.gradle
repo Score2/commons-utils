@@ -24,7 +24,7 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
-        maven {url 'https://hub.spigotmc.org/nexus/content/groups/snapshots/'}
+        maven {url 'https://hub.spigotmc.org/repository/snapshots/'}
         maven {url 'https://repo.md-5.net/repository/public/'}
     }
 }
