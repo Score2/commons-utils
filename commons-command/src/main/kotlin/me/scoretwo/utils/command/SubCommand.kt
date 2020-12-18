@@ -22,7 +22,7 @@ abstract class SubCommand(val alias: Array<String>,
         }
 
         val parentsEditor = parents.toMutableList()
-        parentsEditor[parents.size + 1] = args[0]
+        parentsEditor.add(args[0])
         val rearArgs = mutableListOf<String>()
 
         for (i in 1 until args.size) {
@@ -39,8 +39,18 @@ abstract class SubCommand(val alias: Array<String>,
      * subCommand list + tabCompleted list to return
      * 方法参考 FastScript
      */
-    fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
-        return mutableListOf()
+    fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
+        if (!sender.hasPermission("${toNode(parents)}.use")) {
+            return null
+        }
+
+        if (args.isEmpty()) {
+            val commandNames = mutableListOf<String>()
+
+            subCommands.forEach { commandNames.addAll(it.alias) }
+            return commandNames
+        }
+
     }
 
     open fun executed(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
