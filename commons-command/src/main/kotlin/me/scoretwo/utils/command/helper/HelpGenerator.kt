@@ -6,7 +6,7 @@ interface HelpGenerator {
 
     val description: Description
 
-    fun translateTexts(parents: Array<String>, args: Array<String>): MutableList<MutableList<TextComponent>>
+    fun translateTexts(parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>>
 
     companion object {
         class Description(val name: String, val version: String)

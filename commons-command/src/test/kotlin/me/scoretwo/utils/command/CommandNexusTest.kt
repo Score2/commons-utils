@@ -1,36 +1,25 @@
 package me.scoretwo.utils.command
 
-import com.andreapivetta.kolor.red
+import com.andreapivetta.kolor.*
 import net.md_5.bungee.api.chat.BaseComponent
 import org.junit.Test
 
 class CommandNexusTest {
 
-    val commandNexus: CommandNexus = object : CommandNexus(arrayOf("test"), object : CommandProcessor {
-        override fun sendMessage(sender: Any, string: String) {
-            println(string)
-        }
+    val commandNexus: CommandNexus = object : CommandNexus(arrayOf("test")) {
 
-        override fun sendMessage(sender: Any, component: BaseComponent) {
-            println(component.toString())
-        }
-
-        override fun hasPermission(sender: Any, permission: String): Boolean {
-            return true
-        }
-
-        override fun getName(sender: Any): String {
-            return "Tester"
-        }
-
-    }) {
-
-        override fun executed(sender: Any, parents: Array<String>, args: Array<String>): Boolean {
+        override fun executed(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
 
             when {
                 parents[0] == "testOne" -> {
-                    if (args[0] != "test2" || args[1] != "test3") {
-                        println("[${javaClass.name}][executeCommand] testOne failed!".red())
+                    println(prefix + "parents[0] == testOne".green())
+                    if (args[0] != "test2") {
+                        println(prefix + "args[0] != test2".red())
+                        println(prefix + "args[0] == ${args[0]}".red())
+                    }
+                    if (args[1] != "test3") {
+                        println(prefix + "args[1] != test3".red())
+                        println(prefix + "args[1] == ${args[1]}".red())
                     }
                 }
             }
@@ -43,8 +32,23 @@ class CommandNexusTest {
     @Test
     fun executeCommand() {
 
-        commandNexus.execute(this, arrayOf("testOne"), arrayOf("test2","test3"))
+        commandNexus.execute(sender, mutableListOf("testOne"), mutableListOf("test2","test3"))
 
     }
 
 }
+
+val sender = object : GlobalSender {
+    override val name: String = "TESTER"
+
+    override fun sendMessage(message: String) = println(message)
+
+    override fun sendMessage(messages: Array<String>) = println(messages)
+
+    override fun hasPermission(name: String): Boolean {
+        return true
+    }
+
+}
+
+val prefix = "${Thread.currentThread().stackTrace[2].className}#${Thread.currentThread().stackTrace[2].methodName}".cyan() + " >>> ".lightGray()

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
+
 dependencies {
     compileOnly("commons-lang:commons-lang:2.6")
     compileOnly("com.google.guava:guava:22.0")
@@ -6,9 +8,9 @@ dependencies {
 
 shadowJar {
     dependencies {
-        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
-        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
-        include(dependency('org.yaml:snakeyaml:1.27'))
+        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
+        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
+        include(dependency("org.yaml:snakeyaml:1.27")))
     }
     relocate("org.yaml.snakeyaml", "me.scoretwo.utils.libs.snakeyaml")
 

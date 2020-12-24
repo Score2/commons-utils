@@ -5,13 +5,12 @@ import me.scoretwo.utils.command.helper.HelpGenerator
 import net.md_5.bungee.api.chat.BaseComponent
 
 abstract class SubCommand(val alias: Array<String>,
-                          private val processor: CommandProcessor,
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
 ) {
 
     open var subCommands = mutableListOf<SubCommand>()
 
-    fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+    fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
         if (!sender.hasPermission("${toNode(parents)}.use")) {
             return true
         }
@@ -21,17 +20,21 @@ abstract class SubCommand(val alias: Array<String>,
             return true
         }
 
-        val parentsEditor = parents.toMutableList()
-        parentsEditor.add(args[0])
-        val rearArgs = mutableListOf<String>()
+        val subCommand = findSubCommand(args[0]) ?: return execute(
+            sender,
 
-        for (i in 1 until args.size) {
-            rearArgs[i - 1] = args[i]
-        }
+            parents.also {
+                it.add(args[0])
+            },
 
-        val subCommand = findSubCommand(args[0]) ?: return executed(sender, parentsEditor.toTypedArray(), rearArgs.toTypedArray())
+            mutableListOf<String>().also {
+                for (i in 1 until args.size) {
+                    it.add(args[i])
+                }
+            }
+        )
 
-        return subCommand.execute(sender, parentsEditor.toTypedArray(), rearArgs.toTypedArray())
+        return subCommand.executed(sender, parents, args)
     }
 
 
@@ -39,7 +42,7 @@ abstract class SubCommand(val alias: Array<String>,
      * subCommand list + tabCompleted list to return
      * 方法参考 FastScript
      */
-    fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
+    fun tabComplete(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
         if (!sender.hasPermission("${toNode(parents)}.use")) {
             return null
         }
@@ -48,16 +51,36 @@ abstract class SubCommand(val alias: Array<String>,
             val commandNames = mutableListOf<String>()
 
             subCommands.forEach { commandNames.addAll(it.alias) }
+
+            commandNames.addAll(tabCompleted(sender, parents, args))
+
             return commandNames
         }
 
+        for (subCommand in subCommands) {
+            if (subCommand.alias.contains(args[0])) {
+
+                val parentsEditor = parents.toMutableList()
+                parentsEditor.add(args[0])
+                val rearArgs = mutableListOf<String>()
+
+                for (i in 1 until args.size) {
+                    rearArgs.add(args[i])
+                }
+
+                return subCommand.tabComplete(sender, parentsEditor, rearArgs)
+
+            }
+        }
+
+        return null
     }
 
-    open fun executed(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+    open fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
         return false
     }
 
-    open fun tabCompleted(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String> {
+    open fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String> {
         return mutableListOf()
     }
 
@@ -87,7 +110,7 @@ abstract class SubCommand(val alias: Array<String>,
         return processor.getName(this)
     }*/
 
-    private fun toNode(array: Array<String>): String {
+    private fun toNode(array: MutableList<String>): String {
         var string = ""
         array.forEach { string += "${it}." }
         return string.substring(0, string.length - 1)

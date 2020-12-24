@@ -1,11 +1,13 @@
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
+
 dependencies {
 
 }
 
 shadowJar {
     dependencies {
-        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
-        exclude(dependency('org.jetbrains.kotlin:kotlin-stdlib-common'))
+        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
+        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
     }
     archiveClassifier = null
 }

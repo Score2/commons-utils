@@ -9,8 +9,8 @@ open class DefaultHelpGenerator(pluginName: String, pluginVersion: String): Help
 
     // 20 行聊天框长度
     override fun translateTexts(
-        parents: Array<String>,
-        args: Array<String>
+        parents: MutableList<String>,
+        args: MutableList<String>
     ): MutableList<MutableList<TextComponent>> {
         val texts = mutableListOf<TextComponent>()
 
