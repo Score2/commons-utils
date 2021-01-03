@@ -1,7 +1,13 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.4.21"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("maven")
+    id("maven-publish")
+    id("java")
+}
 
 dependencies {
-    for (p in parent.getAllprojects()) {
+    for (p in parent!!.allprojects) {
         if (p.name == "commons-utils" || p.name == "commons-integration") continue
 
         if (!File(p.projectDir, "build.gradle.kts").exists()) continue

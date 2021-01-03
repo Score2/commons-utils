@@ -1,4 +1,30 @@
 rootProject.name = "commons-utils"
+
+private var prefix = "commons"
+
+listOf(
+    "syntaxes",
+    "command"
+).forEach {
+    include(":${prefix}-${it}")
+}
+
+prefix = "commons-bukkit"
+listOf(
+    "command",
+    "configuration"
+).forEach {
+    include(":${prefix}:${prefix}-${it}")
+}
+
+prefix = "commons-bungee"
+listOf(
+    "command"
+).forEach {
+    include(":${prefix}:${prefix}-${it}")
+}
+
+/*
 include("commons-syntaxes")
 include("commons-command")
 include("commons-bukkit")

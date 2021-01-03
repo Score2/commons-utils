@@ -1,4 +1,12 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
+plugins {
+    kotlin("jvm")
+    id("org.jetbrains.dokka")
+    id("org.jlleitschuh.gradle.ktlint")
+    id("com.github.johnrengelman.shadow")
+    id("maven")
+    id("maven-publish")
+    id("java")
+}
 
 dependencies {
 
