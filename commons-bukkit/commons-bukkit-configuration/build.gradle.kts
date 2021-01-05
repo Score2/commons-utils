@@ -14,20 +14,21 @@ dependencies {
     implementation("org.yaml:snakeyaml:1.27")
 }
 
-shadowJar {
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
-        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
         include(dependency("org.yaml:snakeyaml:1.27"))
     }
     relocate("org.yaml.snakeyaml", "me.scoretwo.utils.libs.snakeyaml")
 
-    archiveClassifier = null
+    classifier = null
 }
-publishing {
+
+configure<PublishingExtension> {
     publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
+        create<MavenPublication>("shadow") {
+            shadow.component(this)
         }
     }
 }

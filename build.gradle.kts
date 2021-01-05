@@ -19,8 +19,6 @@ buildscript {
 if (File("options.gradle。kts").exists()) {
     apply("options.gradle.kts")
 }
-group = "me.scoretwo"
-version = "2.0-SNAPSHOT"
 
 defaultTasks = mutableListOf("publishToMavenLocal")
 
@@ -35,5 +33,10 @@ allprojects {
 }
 
 subprojects {
+    group = "me.scoretwo"
+    version = "2.0-SNAPSHOT"
 
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }

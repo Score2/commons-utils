@@ -7,13 +7,13 @@ plugins {
     id("maven-publish")
     id("java")
 }
-dependencies {
 
+dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT")
     implementation(project(":commons-command"))
 }
 
-tasks.shadowJar {
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
@@ -23,10 +23,11 @@ tasks.shadowJar {
 
     classifier = null
 }
-publishing {
+
+configure<PublishingExtension> {
     publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
+        create<MavenPublication>("shadow") {
+            shadow.component(this)
         }
     }
 }

@@ -12,18 +12,32 @@ dependencies {
     compileOnly("net.md-5:bungeecord-api:1.16-R0.3")
 }
 
-shadowJar {
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependencies {
-        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
-        exclude(dependency(kotlin("stdlib", KotlinCompilerVersion.VERSION)))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
+        exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
     }
-
-    archiveClassifier = null
+    classifier = null
 }
-publishing {
+
+configure<PublishingExtension> {
     publications {
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
+        create<MavenPublication>("shadow") {
+            shadow.component(this)
         }
     }
 }
+
+
+/*
+publishing {
+    publications {
+        create<MavenPublication>(project.name) {
+            project.shadow.component(this)
+        }
+    }
+
+    publications.withType<MavenPublication> {
+        project.shadow.component(this)
+    }
+}*/
