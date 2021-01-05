@@ -9,7 +9,7 @@ plugins {
     id("java")
 }
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.3")
+    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

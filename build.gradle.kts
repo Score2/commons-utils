@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
+
 plugins {
     kotlin("jvm") version "1.4.21" apply false
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
@@ -16,7 +18,7 @@ buildscript {
     }
 }
 
-if (File("options.gradle。kts").exists()) {
+if (File("options.gradle.kts").exists()) {
     apply("options.gradle.kts")
 }
 
@@ -27,8 +29,8 @@ allprojects {
         jcenter()
         mavenCentral()
         mavenLocal()
-        maven("https://hub.spigotmc.org/repository/snapshots/")
-        maven("https://repo.md-5.net/repository/public/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
     }
 }
 
