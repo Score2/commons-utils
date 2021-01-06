@@ -8,7 +8,22 @@ class CommandNexusTest {
 
     val commandNexus: CommandNexus = object : CommandNexus(arrayOf("test")) {
 
-        override fun executed(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+        init {
+            subCommands.add(object : SubCommand(arrayOf("test4")) {
+
+                override fun executed(
+                    sender: GlobalSender,
+                    parents: MutableList<String>,
+                    args: MutableList<String>
+                ): Boolean {
+                    println(prefix + "test4 succeed execute!".green())
+                    return true
+                }
+
+            })
+        }
+
+        override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
 
             when {
                 parents[0] == "testOne" -> {
@@ -16,10 +31,14 @@ class CommandNexusTest {
                     if (args[0] != "test2") {
                         println(prefix + "args[0] != test2".red())
                         println(prefix + "args[0] == ${args[0]}".red())
+                    } else {
+                        println(prefix + "test2 succeed execute!".green())
                     }
                     if (args[1] != "test3") {
                         println(prefix + "args[1] != test3".red())
                         println(prefix + "args[1] == ${args[1]}".red())
+                    } else {
+                        println(prefix + "test3 succeed execute!".green())
                     }
                 }
             }
@@ -33,6 +52,8 @@ class CommandNexusTest {
     fun executeCommand() {
 
         commandNexus.execute(sender, mutableListOf("testOne"), mutableListOf("test2","test3"))
+
+        commandNexus.execute(sender, mutableListOf("testTwo"), mutableListOf("test4"))
 
     }
 

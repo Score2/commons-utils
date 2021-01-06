@@ -1,8 +1,8 @@
 package me.scoretwo.utils.bukkit.configuration.yaml.patchs
 
-import me.scoretwo.utils.bukkit.configuration.yaml.ConfigurationSection
-import me.scoretwo.utils.bukkit.configuration.yaml.MemorySection
-import me.scoretwo.utils.bukkit.configuration.yaml.file.YamlConfiguration
+import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.MemorySection
+import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 fun File.loadConfiguration(): YamlConfiguration {

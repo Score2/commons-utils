@@ -22,11 +22,9 @@ abstract class SubCommand(val alias: Array<String>,
 
         val subCommand = findSubCommand(args[0]) ?: return execute(
             sender,
-
             parents.also {
                 it.add(args[0])
             },
-
             mutableListOf<String>().also {
                 for (i in 1 until args.size) {
                     it.add(args[i])

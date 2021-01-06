@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.internal.Kapt3GradleSubplugin.Companion.findKaptConfiguration
-
 plugins {
     kotlin("jvm") version "1.4.21" apply false
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
