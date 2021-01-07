@@ -1,5 +1,9 @@
 rootProject.name = "commons-utils"
 
+/**
+ * @author Score2
+ * @version 1.2
+ */
 class MergeBuilder {
     val nodes: MutableList<String>
 
@@ -12,6 +16,16 @@ class MergeBuilder {
     constructor(nodes: MutableList<String>, vararg addNodes: String): this(nodes, addNodes.toMutableList())
     constructor(nodes: MutableList<String>, addNodes: MutableList<String>) {
         this.nodes = nodes.also { it.addAll(addNodes) }
+    }
+
+    fun add(vararg addNodes: String) = add(addNodes.toMutableList())
+    fun add(addNodes: MutableList<String> = mutableListOf()) {
+        val editedList = mutableListOf<String>().also { it.addAll(nodes); it.addAll(addNodes) }
+        val finallyNode = java.lang.StringBuilder()
+        for (i in 0 until editedList.size) {
+            finallyNode.append(":${editedList[i]}")
+        }
+        include(finallyNode.toString())
     }
 
     fun merge(vararg addNodes: String) = merge(addNodes.toMutableList())
@@ -32,22 +46,35 @@ class MergeBuilder {
         include(finallyNode.toString())
         return this
     }
+
+    fun newBuilder(vararg addNodes: String): MergeBuilder = newBuilder(addNodes.toMutableList())
+    fun newBuilder(addNodes: MutableList<String>): MergeBuilder {
+        return MergeBuilder(nodes, addNodes)
+    }
 }
 
 include("commons-syntaxes")
 include("commons-command")
+include("commons-server")
 
-MergeBuilder("commons-sponge", "configuration").let {
-    it.merge("yaml")
-    it.merge("xaml")
+MergeBuilder("commons-sponge").also {
+    it.merge("command")
+    it.newBuilder("configuration").also {
+        it.merge("yaml")
+        it.merge("xaml")
+    }
 }
 
-MergeBuilder("commons-bukkit").let {
+MergeBuilder("commons-bukkit").also {
     it.merge("command")
     it.merge("configuration")
 }
 
-MergeBuilder("commons-bungee").let {
+MergeBuilder("commons-bungee").also {
+    it.merge("command")
+}
+
+MergeBuilder("commons-velocity").also {
     it.merge("command")
 }
 

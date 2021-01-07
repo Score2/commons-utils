@@ -8,8 +8,13 @@ plugins {
     id("maven-publish")
 
 }
+
+repositories {
+    maven("https://repo.spongepowered.org/maven")
+}
+
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
+    compileOnly("org.spongepowered:spongeapi:7.3.0")
     implementation(project(":commons-command"))
 }
 

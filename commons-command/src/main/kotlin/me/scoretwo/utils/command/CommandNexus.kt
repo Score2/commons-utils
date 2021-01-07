@@ -1,5 +1,7 @@
 package me.scoretwo.utils.command
 
+import me.scoretwo.utils.sender.GlobalSender
+
 open class CommandNexus(alias: Array<String>): SubCommand(alias) {
 
     init {

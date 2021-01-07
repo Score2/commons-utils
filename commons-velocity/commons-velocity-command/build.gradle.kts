@@ -8,8 +8,13 @@ plugins {
     id("maven-publish")
 
 }
+
+repositories {
+    maven("https://nexus.velocitypowered.com/repository/velocity-artifacts-snapshots/")
+}
+
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:1.0.11-SNAPSHOT")
     implementation(project(":commons-command"))
 }
 

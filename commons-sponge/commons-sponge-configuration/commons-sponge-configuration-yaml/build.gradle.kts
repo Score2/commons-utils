@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
-    id("java")
+
 }
 dependencies {
     implementation("org.spongepowered:configurate-yaml:4.0.0")

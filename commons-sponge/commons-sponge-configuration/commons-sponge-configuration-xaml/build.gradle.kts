@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
-    id("java")
+
 }
 
 dependencies {

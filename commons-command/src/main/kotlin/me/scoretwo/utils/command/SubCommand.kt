@@ -2,7 +2,7 @@ package me.scoretwo.utils.command
 
 import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
-import net.md_5.bungee.api.chat.BaseComponent
+import me.scoretwo.utils.sender.GlobalSender
 
 abstract class SubCommand(val alias: Array<String>,
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")

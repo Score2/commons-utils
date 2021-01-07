@@ -1,7 +1,7 @@
 package me.scoretwo.utils.command
 
 import com.andreapivetta.kolor.*
-import net.md_5.bungee.api.chat.BaseComponent
+import me.scoretwo.utils.command.sender.GlobalSender
 import org.junit.Test
 
 class CommandNexusTest {

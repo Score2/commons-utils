@@ -1,4 +1,4 @@
-package me.scoretwo.utils.command
+package me.scoretwo.utils.sender
 
 interface GlobalSender {
 

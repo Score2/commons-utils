@@ -5,10 +5,12 @@ plugins {
     id("com.github.johnrengelman.shadow")
     id("maven")
     id("maven-publish")
-    id("java")
+
 }
 
 dependencies {
+    implementation(project(":commons-server"))
+
     testImplementation("com.andreapivetta.kolor:kolor:1.0.0")
     testImplementation("junit:junit:4.13.1")
     implementation("net.md-5:bungeecord-chat:1.16-R0.3")
