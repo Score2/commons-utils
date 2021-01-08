@@ -1,5 +1,7 @@
 package me.scoretwo.utils.bukkit.command
 
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.command.SimpleCommandMap

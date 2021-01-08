@@ -11,6 +11,7 @@ plugins {
 dependencies {
     testImplementation("com.andreapivetta.kolor:kolor:1.0.0")
     testImplementation("junit:junit:4.13.1")
+    compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

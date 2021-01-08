@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.config.KotlinCompilerVersion
 plugins {
     kotlin("jvm")
     id("org.jetbrains.dokka")
@@ -8,10 +7,11 @@ plugins {
     id("maven-publish")
 
 }
+
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
-    implementation(project(":commons-command"))
+    compileOnly("org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT")
     implementation(project(":commons-server"))
+    implementation(project(":commons-bukkit:commons-bukkit-command"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -19,9 +19,10 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency(":commons-command"))
+        include(dependency(":commons-bukkit:commons-bukkit-command"))
         include(dependency(":commons-server"))
     }
+
     classifier = null
 }
 
@@ -32,17 +33,3 @@ configure<PublishingExtension> {
         }
     }
 }
-
-
-/*
-publishing {
-    publications {
-        create<MavenPublication>(project.name) {
-            project.shadow.component(this)
-        }
-    }
-
-    publications.withType<MavenPublication> {
-        project.shadow.component(this)
-    }
-}*/

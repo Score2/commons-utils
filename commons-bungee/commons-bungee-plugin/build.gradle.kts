@@ -10,8 +10,8 @@ plugins {
 }
 dependencies {
     compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
-    implementation(project(":commons-command"))
     implementation(project(":commons-server"))
+    implementation(project(":commons-bungee:commons-bungee-command"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -19,8 +19,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency(":commons-command"))
         include(dependency(":commons-server"))
+        exclude(dependency(":commons-bungee:commons-bungee-command"))
     }
     classifier = null
 }

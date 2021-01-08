@@ -16,6 +16,7 @@ repositories {
 dependencies {
     compileOnly("org.spongepowered:spongeapi:7.3.0")
     implementation(project(":commons-command"))
+    implementation(project(":commons-server"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -24,6 +25,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency(":commons-command"))
+        include(dependency(":commons-server"))
     }
     classifier = null
 }

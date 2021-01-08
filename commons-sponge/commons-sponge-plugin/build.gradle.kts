@@ -8,10 +8,15 @@ plugins {
     id("maven-publish")
 
 }
+
+repositories {
+    maven("https://repo.spongepowered.org/maven")
+}
+
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
-    implementation(project(":commons-command"))
+    compileOnly("org.spongepowered:spongeapi:7.3.0")
     implementation(project(":commons-server"))
+    implementation(project(":commons-sponge:commons-sponge-command"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -19,8 +24,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency(":commons-command"))
         include(dependency(":commons-server"))
+        include(dependency(":commons-sponge:commons-sponge-command"))
     }
     classifier = null
 }

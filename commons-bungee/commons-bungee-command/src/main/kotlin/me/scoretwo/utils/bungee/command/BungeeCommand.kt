@@ -1,7 +1,7 @@
 package me.scoretwo.utils.bungee.command
 
-import me.scoretwo.utils.command.sender.GlobalPlayer
-import me.scoretwo.utils.command.sender.GlobalSender
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent

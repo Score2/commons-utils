@@ -20,7 +20,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency(":commons-command"))
-        implementation(project(":commons-server"))
+        include(dependency(":commons-server"))
     }
 
     classifier = null

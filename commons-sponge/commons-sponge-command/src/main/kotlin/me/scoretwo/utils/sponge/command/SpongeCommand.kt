@@ -1,7 +1,7 @@
 package me.scoretwo.utils.sponge.command
 
-import me.scoretwo.utils.command.sender.GlobalPlayer
-import me.scoretwo.utils.command.sender.GlobalSender
+import me.scoretwo.utils.sender.GlobalPlayer
+import me.scoretwo.utils.sender.GlobalSender
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.text.TextTemplate
@@ -9,14 +9,7 @@ import java.util.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.event.cause.EventContext
-import org.spongepowered.api.event.cause.EventContextKeys
-import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
-import org.spongepowered.api.text.title.Title.reset
-
-
-object SpongeCommand {
-}
 
 fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->
     object : GlobalPlayer {
