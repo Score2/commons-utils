@@ -16,8 +16,11 @@ import me.scoretwo.utils.sponge.command.toGlobalPlayer
 import me.scoretwo.utils.sponge.command.toSpongePlayer
 import me.scoretwo.utils.sponge.plugin.toGlobalPlugin
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
+import org.spongepowered.api.Platform
 import org.spongepowered.api.Server
+import org.spongepowered.api.Sponge
 import org.spongepowered.api.scheduler.Task
+import org.spongepowered.api.service.permission.Subject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +30,7 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
     else object : GlobalServer {
         override val name = ServerBrand.SPONGE.fullName
         override val brand = ServerBrand.SPONGE
-        override val version = "7.2.0"
+        override val version = "${Sponge.getGame().platform.getContainer(Platform.Component.API).version.get()}.x.x"
         override val schedule = Task.builder().toGlobalScheduler()
         override val console: GlobalSender = server.console.toGlobalSender()
         override fun getPlayer(username: String): Optional<GlobalPlayer> = server.getPlayer(username).let {

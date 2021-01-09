@@ -59,7 +59,6 @@ include("commons-server")
 
 MergeBuilder("commons-sponge").also {
     it.merge("plugin")
-    it.merge("command")
     it.newBuilder("configuration").also {
         it.merge("yaml")
         it.merge("xaml")
@@ -68,18 +67,16 @@ MergeBuilder("commons-sponge").also {
 
 MergeBuilder("commons-bukkit").also {
     it.merge("plugin")
-    it.merge("command")
     it.merge("configuration")
 }
 
 MergeBuilder("commons-bungee").also {
     it.merge("plugin")
-    it.merge("command")
 }
 
 MergeBuilder("commons-velocity").also {
     it.merge("plugin")
-    it.merge("command")
+    it.merge("example")
 }
 
 /*

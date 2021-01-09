@@ -10,11 +10,11 @@ plugins {
 }
 
 repositories {
-    maven("https://repo.spongepowered.org/maven")
+    maven("https://repo.velocitypowered.com/snapshots/")
 }
 
 dependencies {
-    compileOnly("org.spongepowered:spongeapi:7.3.0")
+    compileOnly("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")
     implementation(project(":commons-server"))
     implementation(project(":commons-command"))
     implementation(project(":commons-syntaxes"))

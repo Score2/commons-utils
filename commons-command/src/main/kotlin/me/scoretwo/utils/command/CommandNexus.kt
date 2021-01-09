@@ -1,8 +1,9 @@
 package me.scoretwo.utils.command
 
+import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalSender
 
-open class CommandNexus(alias: Array<String>): SubCommand(alias) {
+open class CommandNexus(plugin: GlobalPlugin, alias: Array<String>): SubCommand(plugin, alias) {
 
     init {
 

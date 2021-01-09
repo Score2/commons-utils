@@ -11,7 +11,8 @@ plugins {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.4-R0.1-SNAPSHOT")
     implementation(project(":commons-server"))
-    implementation(project(":commons-bukkit:commons-bukkit-command"))
+    implementation(project(":commons-command"))
+    implementation(project(":commons-syntaxes"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -19,8 +20,9 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
-        include(dependency(":commons-bukkit:commons-bukkit-command"))
         include(dependency(":commons-server"))
+        include(dependency(":commons-command"))
+        include(dependency(":commons-syntaxes"))
     }
 
     classifier = null

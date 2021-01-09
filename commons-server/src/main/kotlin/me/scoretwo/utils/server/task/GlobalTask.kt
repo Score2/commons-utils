@@ -10,4 +10,5 @@ interface GlobalTask {
     fun cancel()
     fun isCancelled(): Boolean
 }
+// 暂时不作修改
 val globalTasks = mutableMapOf<Int, GlobalTask>()

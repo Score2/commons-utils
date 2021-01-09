@@ -2,9 +2,11 @@ package me.scoretwo.utils.command
 
 import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
+import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalSender
 
-abstract class SubCommand(val alias: Array<String>,
+abstract class SubCommand(val plugin: GlobalPlugin,
+                          val alias: Array<String>,
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
 ) {
 
