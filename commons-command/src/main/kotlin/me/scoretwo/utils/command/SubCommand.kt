@@ -1,19 +1,44 @@
 package me.scoretwo.utils.command
 
+import me.scoretwo.utils.command.SendLimit.*
+import me.scoretwo.utils.command.executor.CommandExecutor
+import me.scoretwo.utils.command.executor.TabExecutor
 import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
+import me.scoretwo.utils.command.language.CommandLanguage
+import me.scoretwo.utils.command.language.DefaultCommandLanguage
 import me.scoretwo.utils.plugin.GlobalPlugin
+import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 
 abstract class SubCommand(val plugin: GlobalPlugin,
                           val alias: Array<String>,
+                          val sendLimit: SendLimit = ALL,
+                          val language: CommandLanguage = DefaultCommandLanguage(),
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
-) {
+): CommandExecutor, TabExecutor {
 
     open var subCommands = mutableListOf<SubCommand>()
 
     fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
-        if (!sender.hasPermission("${toNode(parents)}.use")) {
+        when (sendLimit) {
+            PLAYER -> {
+                if (sender !is GlobalPlayer) {
+                    sender.sendMessage(language.COMMAND_ONLY_PLAYER)
+                    return true
+                }
+            }
+            ALL -> {
+            }
+            CONSOLE -> {
+                if (sender is GlobalPlayer) {
+                    sender.sendMessage(language.COMMAND_ONLY_CONSOLE)
+                    return true
+                }
+            }
+        }
+        if (sendLimit.permission && !sender.hasPermission("${toNode(parents)}.use")) {
+            sender.sendMessage(language.COMMAND_NO_PERMISSION)
             return true
         }
 
@@ -43,7 +68,21 @@ abstract class SubCommand(val plugin: GlobalPlugin,
      * 方法参考 FastScript
      */
     fun tabComplete(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
-        if (!sender.hasPermission("${toNode(parents)}.use")) {
+        when (sendLimit) {
+            PLAYER -> {
+                if (sender !is GlobalPlayer) {
+                    return null
+                }
+            }
+            ALL -> {
+            }
+            CONSOLE -> {
+                if (sender is GlobalPlayer) {
+                    return null
+                }
+            }
+        }
+        if (sendLimit.permission && !sender.hasPermission("${toNode(parents)}.use")) {
             return null
         }
 
@@ -52,7 +91,7 @@ abstract class SubCommand(val plugin: GlobalPlugin,
 
             subCommands.forEach { commandNames.addAll(it.alias) }
 
-            commandNames.addAll(tabCompleted(sender, parents, args))
+            commandNames.addAll(tabCompleted(sender, parents, args) ?: mutableListOf())
 
             return commandNames
         }
@@ -76,14 +115,13 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         return null
     }
 
-    open fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
-        return false
+    override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
+        return true
     }
 
-    open fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String> {
-        return mutableListOf()
+    override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
+        return null
     }
-
 
     fun findSubCommand(alia: String): SubCommand? {
         subCommands.forEach { subCommand ->
@@ -93,23 +131,6 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         return null
     }
 
-/*
-    fun Any.sendMessage(string: String) {
-        processor.sendMessage(this, string)
-    }
-
-    fun Any.sendMessage(component: BaseComponent) {
-        processor.sendMessage(this, component)
-    }
-
-    fun Any.hasPermission(permission: String): Boolean {
-        return processor.hasPermission(this, permission)
-    }
-
-    fun Any.getName(): String {
-        return processor.getName(this)
-    }*/
-
     private fun toNode(array: MutableList<String>): String {
         var string = ""
         array.forEach { string += "${it}." }
@@ -118,4 +139,43 @@ abstract class SubCommand(val plugin: GlobalPlugin,
 
 }
 
-enum class SendLimit { PLAYER, CONSOLE, ALL, PERMISSION }
+class CommandBuilder {
+
+    var subCommand: SubCommand? = null
+    var plugin: GlobalPlugin? = null
+    var alias: Array<String>? = null
+
+    fun alias(vararg alias: String) {
+        this.alias = arrayOf(*alias)
+
+    }
+
+    private fun initSubCommand() {
+        if (subCommand != null && alias != null && plugin != null) {
+            subCommand = object : SubCommand(plugin!!, alias!!) {
+                override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
+                    return true
+                }
+                override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
+                    return null
+                }
+            }
+        }
+    }
+
+    companion object {
+        fun builder() = CommandBuilder()
+    }
+}
+
+enum class SendLimit {
+    PLAYER,
+    CONSOLE,
+    ALL;
+
+    var permission = true
+
+    fun permission(need: Boolean): SendLimit = this.also {
+        it.permission = need
+    }
+}
