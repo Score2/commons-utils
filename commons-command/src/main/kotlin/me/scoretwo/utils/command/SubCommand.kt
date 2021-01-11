@@ -7,18 +7,31 @@ import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
 import me.scoretwo.utils.command.language.DefaultCommandLanguage
+import me.scoretwo.utils.exceptions.CommandException
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 
 abstract class SubCommand(val plugin: GlobalPlugin,
                           val alias: Array<String>,
-                          val sendLimit: SendLimit = ALL,
-                          val language: CommandLanguage = DefaultCommandLanguage(),
+                          var sendLimit: SendLimit = ALL,
+                          var language: CommandLanguage = DefaultCommandLanguage(),
                           var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
 ): CommandExecutor, TabExecutor {
 
     open var subCommands = mutableListOf<SubCommand>()
+
+    var commandExecutor = object : CommandExecutor {
+        override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
+            return true
+        }
+    }
+
+    var tabExecutor = object : TabExecutor {
+        override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
+            return null
+        }
+    }
 
     fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
         when (sendLimit) {
@@ -137,30 +150,64 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         return string.substring(0, string.length - 1)
     }
 
+    fun builder() = CommandBuilder.builder()
+        .plugin(plugin)
+        .alias(*alias)
+        .execute(commandExecutor)
+        .tabComplete(tabExecutor)
+        .limit(sendLimit)
+        .language(language)
+        .helpGenerator(helpGenerator)
+
 }
 
 class CommandBuilder {
+    private var plugin: GlobalPlugin? = null
+    private var alias: Array<String>? = null
 
-    var subCommand: SubCommand? = null
-    var plugin: GlobalPlugin? = null
-    var alias: Array<String>? = null
+    private var commandExecutor: CommandExecutor? = null
+    private var tabExecutor: TabExecutor? = null
 
-    fun alias(vararg alias: String) {
-        this.alias = arrayOf(*alias)
+    private var sendLimit: SendLimit? = null
+    private var language: CommandLanguage? = null
+    private var helpGenerator: HelpGenerator? = null
 
+    fun alias(alias: List<String>) = this.also { this.alias = alias.toTypedArray() }
+    fun alias(vararg alias: String) = this.also { this.alias = arrayOf(*alias) }
+    fun plugin(plugin: GlobalPlugin) = this.also { this.plugin = plugin }
+    fun execute(commandExecutor: CommandExecutor) = this.also { this.commandExecutor = commandExecutor }
+    fun tabComplete(tabExecutor: TabExecutor) = this.also { this.tabExecutor = tabExecutor }
+    fun limit(limit: SendLimit) = this.also { this.sendLimit = limit }
+    fun language(language: CommandLanguage) = this.also { this.language = language }
+    fun helpGenerator(helpGenerator: HelpGenerator) = this.also { this.helpGenerator = helpGenerator }
+
+    fun reset() = this.also {
+        /*
+        plugin = null
+        alias = null
+        commandExecutor = null
+        tabExecutor = null
+        sendLimit = null
+        */
+        javaClass.fields.forEach {
+            it.isAccessible = true
+            it.set(this, null)
+        }
     }
 
-    private fun initSubCommand() {
-        if (subCommand != null && alias != null && plugin != null) {
-            subCommand = object : SubCommand(plugin!!, alias!!) {
-                override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
-                    return true
-                }
-                override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
-                    return null
-                }
-            }
+    fun build(): SubCommand {
+        plugin ?: throw CommandException("plugin", "null")
+        alias ?: throw CommandException("alias", "null")
+        if (alias!!.isEmpty()) throw CommandException("alias", "empty")
+
+        return object : SubCommand(plugin!!, alias!!) {}.also {
+            if (sendLimit != null) it.sendLimit = sendLimit!!
+            if (helpGenerator != null) it.helpGenerator = helpGenerator!!
+            if (language != null) it.language = language!!
+            if (commandExecutor != null) it.commandExecutor = commandExecutor!!
+            if (tabExecutor != null) it.tabExecutor = tabExecutor!!
         }
+
     }
 
     companion object {
