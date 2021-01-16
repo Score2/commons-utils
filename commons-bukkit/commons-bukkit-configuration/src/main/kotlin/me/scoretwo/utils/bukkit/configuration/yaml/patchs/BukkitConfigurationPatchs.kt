@@ -33,25 +33,22 @@ fun ConfigurationSection.getUpperCaseNode(path: String): String {
     return path
 }
 
-fun ConfigurationSection.getConfigurationSectionList(path: String): List<ConfigurationSection>? {
-    val list = getList(path) ?: return null
-    val result = mutableListOf<ConfigurationSection>()
+fun ConfigurationSection.getConfigurationSectionList(path: String, def: List<ConfigurationSection>? = null): List<ConfigurationSection>? = mutableListOf<ConfigurationSection>().also {
+    val list = getList(path) ?: return def
 
     for (raw in list) {
         val yamlConfiguration = YamlConfiguration()
         when (raw) {
-            is MemorySection -> result.add(yamlConfiguration)
+            is MemorySection -> it.add(yamlConfiguration)
             is List<*> -> raw.forEach { any ->
                 val args = any.toString().split(Regex(":"), 2)
                 if (args.size == 2) yamlConfiguration.set(args[0], args[1])
-                result.add(yamlConfiguration)
+                it.add(yamlConfiguration)
             }
             is Map<*, *> -> {
                 raw.entries.forEach { entry -> yamlConfiguration.set(entry.key.toString(), entry.value) }
-                result.add(yamlConfiguration)
+                it.add(yamlConfiguration)
             }
         }
     }
-
-    return result
 }
