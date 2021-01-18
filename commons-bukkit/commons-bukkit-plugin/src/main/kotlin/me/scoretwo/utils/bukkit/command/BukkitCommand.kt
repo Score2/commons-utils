@@ -3,6 +3,7 @@ package me.scoretwo.utils.bukkit.command
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.globalServer
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -45,6 +46,11 @@ fun CommandSender.toGlobalSender(): GlobalSender = this.let { sender ->
             override fun sendMessage(message: String) = sender.sendMessage(message)
             override fun sendMessage(messages: Array<String>) = sender.sendMessage(messages)
             override fun hasPermission(name: String): Boolean = sender.hasPermission(name)
+            override fun toPlayer() = globalServer.getPlayer(name).let {
+                if (it.isPresent) it.get() else null
+            }
+
+            override fun isPlayer() = globalServer.isOnlinePlayer()
         }
 }
 

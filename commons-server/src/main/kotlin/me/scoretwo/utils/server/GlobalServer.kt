@@ -17,6 +17,7 @@ interface GlobalServer {
     fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer>
 
     fun getOnlinePlayers(): Collection<GlobalPlayer>
+    fun isOnlinePlayer(username: String): Boolean
     fun isOnlinePlayer(player: GlobalPlayer): Boolean
     fun isOnlinePlayer(uniqueId: UUID): Boolean
 
