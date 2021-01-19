@@ -10,7 +10,7 @@ plugins {
 
 dependencies {
     implementation(project(":commons-server"))
-    implementation(project(":commons-language"))
+    implementation(project(":commons-bukkit:commons-bukkit-configuration"))
 
     testImplementation("com.andreapivetta.kolor:kolor:1.0.0")
     testImplementation("junit:junit:4.13.1")

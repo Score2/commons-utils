@@ -56,6 +56,7 @@ class MergeBuilder {
 include("commons-syntaxes")
 include("commons-command")
 include("commons-server")
+include("commons-language")
 
 MergeBuilder("commons-sponge").also {
     it.merge("plugin")
