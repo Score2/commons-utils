@@ -46,11 +46,6 @@ fun CommandSender.toGlobalSender(): GlobalSender = this.let { sender ->
             override fun sendMessage(message: String) = sender.sendMessage(message)
             override fun sendMessage(messages: Array<String>) = sender.sendMessage(messages)
             override fun hasPermission(name: String): Boolean = sender.hasPermission(name)
-            override fun toPlayer() = globalServer.getPlayer(name).let {
-                if (it.isPresent) it.get() else null
-            }
-
-            override fun isPlayer() = globalServer.isOnlinePlayer()
         }
 }
 

@@ -1,5 +1,7 @@
 package me.scoretwo.utils.sender
 
+import me.scoretwo.utils.server.globalServer
+
 interface GlobalSender {
 
     val name: String
@@ -10,7 +12,9 @@ interface GlobalSender {
 
     fun hasPermission(name: String): Boolean
 
-    fun isPlayer(): Boolean
+    fun toPlayer() = globalServer.getPlayer(name).let {
+        if (it.isPresent) it.get() else null
+    }
 
-    fun toPlayer(): GlobalPlayer?
+    fun isPlayer() = globalServer.isOnlinePlayer(name)
 }
