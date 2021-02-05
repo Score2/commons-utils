@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":commons-server"))
     implementation(project(":commons-command"))
     implementation(project(":commons-syntaxes"))
+    implementation("net.md-5:bungeecord-chat:1.16-R0.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

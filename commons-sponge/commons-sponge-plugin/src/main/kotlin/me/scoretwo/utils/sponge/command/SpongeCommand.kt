@@ -11,26 +11,59 @@ import java.util.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.command.args.CommandArgs
+import org.spongepowered.api.command.args.CommandContext
+import org.spongepowered.api.command.args.CommandElement
 import org.spongepowered.api.command.args.GenericArguments
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.event.cause.EventContext
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
+import java.lang.StringBuilder
 
 class SpongeCommandSet(val commandSpecs: MutableList<CommandSpec>, val alias: Array<String>)
 
 fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
     val commandSpecs = mutableListOf<CommandSpec>()
     for (alia in nexus.alias) {
-        commandSpecs.add(CommandSpec.builder()
-            // execute部分已完美运行, tabComplete 还未实现
+        commandSpecs.add(
+            CommandSpec.builder()
+            // 需要测试
+            .arguments(
+                GenericArguments.remainingJoinedStrings(Text.of("help|<other>...")).let {
+                    object : CommandElement(Text.of("help|<other>...")) {
+                        // Copied in sponge RemainingJoinedStringsCommandElement's parseValue
+                        override fun parseValue(source: CommandSource, args: CommandArgs): Any {
+                            args.next()
+                            val ret = args.raw.substring(args.rawPosition)
+                            while (args.hasNext()) {
+                                args.next()
+                            }
+                            return ret
+                        }
+
+                        override fun complete(src: CommandSource, args: CommandArgs, context: CommandContext) =
+                            nexus.tabComplete(src.toGlobalSender(), mutableListOf(alia), args.all.toMutableList()) ?: mutableListOf()
+
+                        override fun getUsage(src: CommandSource): Text {
+                            src.toGlobalSender().also { sender ->
+                                helpGenerator.translateTexts(mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(it.text) }
+                            }
+                            return Text.of("")
+                        }
+
+                    }
+                }
+            )
             .executor { src, args ->
                 nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("args").toMutableList())
                 CommandResult.success()
             }
-            .build().also {
-                Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin(), it, alia)
-            }
+            .also {
+                if (nexus.sendLimit.permission)
+                    it.permission("${nexus.alias[0]}.use")
+                Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin(), it.build(), alia)
+            }.build()
         )
     }
 

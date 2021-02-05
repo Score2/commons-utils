@@ -49,7 +49,8 @@ abstract class SubCommand(val plugin: GlobalPlugin,
                 }
             }
         }
-        if (sendLimit.permission && !sender.hasPermission("${toNode(parents)}.use")) {
+
+        if (sendLimit.permission && !sender.hasPermission(toNode(parents).let { if (parents.size == 1) "${alias[0]}.use" else "$it.use" })) {
             sender.sendMessage(language.COMMAND_NO_PERMISSION)
             return true
         }
@@ -94,7 +95,7 @@ abstract class SubCommand(val plugin: GlobalPlugin,
                 }
             }
         }
-        if (sendLimit.permission && !sender.hasPermission("${toNode(parents)}.use")) {
+        if (sendLimit.permission && !sender.hasPermission(toNode(parents).let { if (parents.size == 1) "${alias[0]}.use" else "$it.use" })) {
             return null
         }
 
@@ -143,7 +144,7 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         return null
     }
 
-    private fun toNode(array: MutableList<String>): String {
+    fun toNode(array: MutableList<String>): String {
         var string = ""
         array.forEach { string += "${it}." }
         return string.substring(0, string.length - 1)
