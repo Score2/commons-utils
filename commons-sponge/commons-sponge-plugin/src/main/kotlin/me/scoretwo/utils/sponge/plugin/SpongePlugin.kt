@@ -30,4 +30,4 @@ fun PluginContainer.toGlobalPlugin() = this.let { plugin ->
     }.also { customPlugins[it.description.name] = it }
 }
 
-fun GlobalPlugin.toSpongePlugin() = Sponge.getPluginManager().getPlugin(this.description.name).get()
+fun GlobalPlugin.toSpongePlugin() = Sponge.getPluginManager().getPlugin(this.description.name.toLowerCase()).get()

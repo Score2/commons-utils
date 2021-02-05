@@ -14,7 +14,7 @@ import java.util.*
 val bukkitCommandMap = Bukkit.getServer().javaClass.getDeclaredMethod("getCommandMap").invoke(Bukkit.getServer()) as SimpleCommandMap
 
 fun CommandNexus.registerBukkitCommands(): Command = this.let { nexus ->
-    object : Command(nexus.alias[0], "", "/${nexus.alias[0]}", nexus.alias.slice(1..nexus.alias.size)) {
+    object : Command(nexus.alias[0], "", "/${nexus.alias[0]}", nexus.alias.slice(1 until nexus.alias.size)) {
         override fun execute(sender: CommandSender, label: String, args: Array<out String>): Boolean {
             nexus.execute(sender.toGlobalSender(), mutableListOf(label), args.toMutableList())
             return true

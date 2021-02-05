@@ -6,9 +6,16 @@ interface GlobalSender {
 
     val name: String
 
-    fun sendMessage(message: String)
+    fun sendMessage(text: String, placeholders: Map<String, String>) {
+        var rawText = text
+        placeholders.forEach {
+            rawText = rawText.replace(it.key, it.value)
+        }
+    }
 
-    fun sendMessage(messages: Array<String>)
+    fun sendMessage(text: String = "")
+
+    fun sendMessage(texts: Array<String>)
 
     fun hasPermission(name: String): Boolean
 

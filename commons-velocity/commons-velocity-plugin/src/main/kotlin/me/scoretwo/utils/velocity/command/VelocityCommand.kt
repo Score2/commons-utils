@@ -18,7 +18,7 @@ fun CommandNexus.registerVelocityCommands(): Command = let { nexus ->
     SimpleCommand { invocation ->
         nexus.execute(invocation.source().toGlobalSender(), mutableListOf(invocation.alias()), invocation.arguments().toMutableList())
     }.also {
-        proxyServer.commandManager.register(proxyServer.commandManager.metaBuilder(nexus.alias[0]).aliases(*nexus.alias.sliceArray(1..nexus.alias.size)).build(), it)
+        proxyServer.commandManager.register(proxyServer.commandManager.metaBuilder(nexus.alias[0]).aliases(*nexus.alias.sliceArray(1 until nexus.alias.size)).build(), it)
     }
 }
 

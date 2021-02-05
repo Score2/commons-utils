@@ -23,14 +23,13 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
     val commandSpecs = mutableListOf<CommandSpec>()
     for (alia in nexus.alias) {
         commandSpecs.add(CommandSpec.builder()
-            // 需要测试
-            .arguments(GenericArguments.remainingJoinedStrings(Text.of("args")))
+            // execute部分已完美运行, tabComplete 还未实现
             .executor { src, args ->
                 nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("args").toMutableList())
                 CommandResult.success()
             }
             .build().also {
-                Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin().instance, it, *alias)
+                Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin(), it, alia)
             }
         )
     }

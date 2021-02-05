@@ -2,6 +2,9 @@ package me.scoretwo.utils.syntaxes
 
 import java.io.*
 import java.net.URL
+import java.net.URLClassLoader
+import java.util.jar.JarEntry
+import java.util.jar.JarInputStream
 
 
 object FileUtils {
@@ -106,32 +109,46 @@ object FileUtils {
         }
         return t
     }
-}
 
-fun File.readString(): String? {
-    return FileUtils.readString(this)
+    @Throws(Exception::class)
+    fun <Type> findClass(file: File, clazz: Class<Type>): Class<out Type>? {
+        if (!file.exists()) {
+            return null
+        }
+        val classes = mutableListOf<Class<out Type>>().also { classList ->
+            val jarUrl = file.toURI().toURL()
+            val matches = mutableListOf<String>()
+            JarInputStream(jarUrl.openStream()).use { stream ->
+                URLClassLoader(arrayOf(jarUrl), clazz.classLoader).use { loader ->
+                    var entry: JarEntry
+                    while (stream.nextJarEntry.also { entry = it } != null) {
+                        val name = entry.name
+                        if (name.isEmpty() || !name.endsWith(".class")) {
+                            continue
+                        }
+                        matches.add(name.substring(0, name.lastIndexOf('.')).replace('/', '.'))
+                    }
+                    matches.forEach { match ->
+                        try {
+                            val loaded = loader.loadClass(match)
+                            if (clazz.isAssignableFrom(loaded)) {
+                                classList.add(loaded.asSubclass(clazz))
+                            }
+                        } catch (ignored: NoClassDefFoundError) {
+                        }
+                    }
+                }
+            }
+        }
+        return if (classes.isEmpty()) null else classes[0]
+    }
 }
-
-fun File.readStringList(): ArrayList<String> {
-    return FileUtils.readStringList(this)
-}
-
-fun File.save(url: URL) {
-    FileUtils.save(this, url)
-}
-
-fun File.save(inputStream: InputStream) {
-    FileUtils.save(this, inputStream)
-}
-
-fun File.save(any: Any) {
-    FileUtils.save(this, any)
-}
-
-fun File.save(list: List<String>) {
-    FileUtils.save(this, list)
-}
-
-fun <Type> File.load(t: Type): Type {
-    return FileUtils.load(this, t)
-}
+fun File.readString() = FileUtils.readString(this)
+fun File.readStringList() = FileUtils.readStringList(this)
+fun File.save(url: URL) = FileUtils.save(this, url)
+fun File.save(inputStream: InputStream) = FileUtils.save(this, inputStream)
+fun File.save(any: Any) = FileUtils.save(this, any)
+fun File.save(list: List<String>) = FileUtils.save(this, list)
+fun <Type> File.load(t: Type) = FileUtils.load(this, t)
+@Throws(Exception::class)
+fun <Type> File.findClass(clazz: Class<Type>) = FileUtils.findClass(this, clazz)

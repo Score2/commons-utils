@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.4.21"
+    kotlin("jvm") version "1.4.30"
     id("org.jetbrains.dokka") version "1.4.10.2" apply false
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
@@ -26,7 +26,7 @@ allprojects {
 
 subprojects {
     group = "me.scoretwo"
-    version = "2.0.4-SNAPSHOT"
+    version = "2.0.7-SNAPSHOT"
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"

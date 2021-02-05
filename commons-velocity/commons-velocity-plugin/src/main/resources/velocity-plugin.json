@@ -1,0 +1,9 @@
+{
+	"id": "example",
+	"name": "Example",
+	"version": "1.0.0",
+	"description": "A example plugin",
+	"authors": ["Score2"],
+	"dependencies": [],
+	"main": "me.scoretwo.example.velocity.Example"
+}

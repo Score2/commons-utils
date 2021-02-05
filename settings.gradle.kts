@@ -60,6 +60,7 @@ include("commons-language")
 
 MergeBuilder("commons-sponge").also {
     it.merge("plugin")
+    it.merge("example")
     it.newBuilder("configuration").also {
         it.merge("yaml")
         it.merge("xaml")
