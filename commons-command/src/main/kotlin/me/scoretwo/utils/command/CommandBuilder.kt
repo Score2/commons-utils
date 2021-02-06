@@ -6,7 +6,6 @@ import me.scoretwo.utils.command.executor.TabExecutor
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
 import me.scoretwo.utils.exceptions.CommandException
-import me.scoretwo.utils.plugin.GlobalPlugin
 
 open class CommandBuilder {
     private var alias: Array<String>? = null

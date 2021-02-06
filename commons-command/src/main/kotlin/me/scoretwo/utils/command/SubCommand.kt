@@ -7,21 +7,32 @@ import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
 import me.scoretwo.utils.command.language.DefaultCommandLanguage
-import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import org.apache.commons.lang.StringUtils
 
-abstract class SubCommand(open val alias: Array<String>, open var sendLimit: SendLimit = ALL) {
+abstract class SubCommand(
+    open val alias: Array<String>,
+    open var sendLimit: SendLimit = ALL
+) {
 
     open var subCommands = mutableListOf<SubCommand>()
 
     abstract val nexus: CommandNexus
-    var language: CommandLanguage = DefaultCommandLanguage()
-    var helpGenerator: HelpGenerator = DefaultHelpGenerator(nexus)
+    open var language: CommandLanguage = DefaultCommandLanguage()
+    open var helpGenerator: HelpGenerator = DefaultHelpGenerator(nexus)
 
-    abstract var commandExecutor: CommandExecutor
-    abstract var tabExecutor: TabExecutor
+    open var tabExecutor = object : TabExecutor {
+        override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
+            return null
+        }
+    }
+
+    open var commandExecutor = object : CommandExecutor {
+        override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
+            return true
+        }
+    }
 
     fun registerBuilder() = CommandBuilder.builder()
         .nexus(nexus)
@@ -44,6 +55,9 @@ abstract class SubCommand(open val alias: Array<String>, open var sendLimit: Sen
         }
         return false
     }
+
+    open fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
+        commandExecutor.execute(sender, parents, args)
 
     fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
         when (sendLimit) {
@@ -101,9 +115,11 @@ abstract class SubCommand(open val alias: Array<String>, open var sendLimit: Sen
             }
         )
 
-        return subCommand.commandExecutor.execute(sender, parents, args)
+        return subCommand.execute(sender, parents.toTypedArray(), args.toTypedArray())
     }
 
+    open fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? =
+        tabExecutor.tabComplete(sender, parents, args)
 
     /**
      * subCommand list + tabCompleted list to return.
@@ -133,7 +149,7 @@ abstract class SubCommand(open val alias: Array<String>, open var sendLimit: Sen
 
             subCommands.forEach { commandNames.addAll(it.alias) }
 
-            commandNames.addAll(tabExecutor.tabComplete(sender, parents, args) ?: mutableListOf())
+            commandNames.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
             return commandNames
         }
