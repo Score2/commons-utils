@@ -7,20 +7,21 @@ import me.scoretwo.utils.command.helper.DefaultHelpGenerator
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
 import me.scoretwo.utils.command.language.DefaultCommandLanguage
+import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import org.apache.commons.lang.StringUtils
 
 abstract class SubCommand(
+    val plugin: GlobalPlugin,
     open val alias: Array<String>,
     open var sendLimit: SendLimit = ALL
 ) {
 
     open var subCommands = mutableListOf<SubCommand>()
 
-    abstract val nexus: CommandNexus
     open var language: CommandLanguage = DefaultCommandLanguage()
-    open var helpGenerator: HelpGenerator = DefaultHelpGenerator(nexus)
+    open var helpGenerator: HelpGenerator = DefaultHelpGenerator(plugin)
 
     open var tabExecutor = object : TabExecutor {
         override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
@@ -35,15 +36,12 @@ abstract class SubCommand(
     }
 
     fun registerBuilder() = CommandBuilder.builder()
-        .nexus(nexus)
+        .plugin(plugin)
         .helpGenerator(helpGenerator)
         .language(language)
         .limit(sendLimit)
 
-    fun register(command: SubCommand) {
-        if (command.nexus == nexus)
-            subCommands.add(command)
-    }
+    fun register(command: SubCommand) = subCommands.add(command)
 
     fun unregister(command: SubCommand) = subCommands.remove(command)
     fun unregister(alia: String): Boolean {
@@ -188,7 +186,7 @@ abstract class SubCommand(
     }
 
     fun builder() = CommandBuilder.builder()
-        .nexus(nexus)
+        .plugin(plugin)
         .alias(*alias)
         .execute(commandExecutor)
         .tabComplete(tabExecutor)

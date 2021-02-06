@@ -7,8 +7,6 @@ import net.md_5.bungee.api.chat.TextComponent
 
 interface HelpGenerator {
 
-    val nexus: CommandNexus
-
     // return page<lines>
     fun translateTexts(parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>>
 
