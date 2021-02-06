@@ -11,6 +11,12 @@ import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import org.apache.commons.lang.StringUtils
+import java.util.stream.Collectors
+
+import java.util.Arrays
+
+
+
 
 abstract class SubCommand(
     val plugin: GlobalPlugin,
@@ -101,19 +107,13 @@ abstract class SubCommand(
             return true
         }
 
-        val subCommand = findSubCommand(args[0]) ?: return execute(
-            sender,
-            parents.also {
-                it.add(args[0])
-            },
-            mutableListOf<String>().also {
-                for (i in 1 until args.size) {
-                    it.add(args[i])
-                }
-            }
-        )
+        val subCommand = findSubCommand(args[0]) ?: return execute(sender, parents.toTypedArray(), args.toTypedArray())
 
-        return subCommand.execute(sender, parents.toTypedArray(), args.toTypedArray())
+        return subCommand.execute(
+            sender,
+            parents.also { it.add(args[0]) },
+            mutableListOf<String>().also { (1 until args.size).forEach { i -> it.add(args[i]) } }
+        )
     }
 
     open fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? =
@@ -143,13 +143,13 @@ abstract class SubCommand(
         }
 
         if (args.isEmpty()) {
-            val commandNames = mutableListOf<String>()
+            val commandAlias = mutableListOf<String>()
 
-            subCommands.forEach { commandNames.addAll(it.alias) }
+            subCommands.forEach { commandAlias.addAll(it.alias) }
 
-            commandNames.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
+            commandAlias.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
-            return commandNames
+            return commandAlias
         }
 
         for (subCommand in subCommands) {
@@ -171,8 +171,10 @@ abstract class SubCommand(
         return null
     }
 
+    fun findKeywordIndex(key: String, list: MutableList<String>) = mutableListOf<String>().also { result -> list.forEach { if (it.startsWith(key)) result.add(it) } }
+
     fun findSubCommand(alia: String): SubCommand? {
-        subCommands.forEach { subCommand ->
+        for (subCommand in subCommands) {
             if (subCommand.alias.contains(alia))
                 return subCommand
         }
