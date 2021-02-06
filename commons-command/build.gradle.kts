@@ -11,6 +11,7 @@ plugins {
 dependencies {
     implementation(project(":commons-server"))
     implementation(project(":commons-language"))
+    implementation("commons-lang:commons-lang:2.6")
 
     testImplementation("com.andreapivetta.kolor:kolor:1.0.0")
     testImplementation("junit:junit:4.13.1")

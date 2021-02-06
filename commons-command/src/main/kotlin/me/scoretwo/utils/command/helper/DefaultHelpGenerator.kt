@@ -1,27 +1,22 @@
 package me.scoretwo.utils.command.helper
 
+import me.scoretwo.utils.command.CommandNexus
 import net.md_5.bungee.api.chat.TextComponent
 
-open class DefaultHelpGenerator(pluginName: String, pluginVersion: String): HelpGenerator {
-
-    override val description: HelpGenerator.Companion.Description =
-        HelpGenerator.Companion.Description(pluginName, pluginVersion)
+open class DefaultHelpGenerator(override val nexus: CommandNexus): HelpGenerator {
 
     // 20 行聊天框长度
-    override fun translateTexts(
-        parents: MutableList<String>,
-        args: MutableList<String>
-    ): MutableList<MutableList<TextComponent>> {
+    override fun translateTexts(parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>> {
         val texts = mutableListOf<TextComponent>()
 
         texts.add(TextComponent(""))
-        texts.add(TextComponent(" &3${description.name} &7v${description.version} &8&l- &eCommand&6Nexus"))
+        texts.add(TextComponent(" &3${nexus.plugin.description.name} &7v${nexus.plugin.description.version} &8&l- &eCommand&6Nexus"))
         return mutableListOf(texts)
     }
 
     open fun upperModule() = mutableListOf(
         TextComponent(""),
-        TextComponent(" &3${description.name} &7v${description.version} &8&l- &eCommand&6Nexus"),
+        TextComponent(" &3${nexus.plugin.description.name} &7v${nexus.plugin.description.version} &8&l- &eCommand&6Nexus"),
         TextComponent("")
     )
 

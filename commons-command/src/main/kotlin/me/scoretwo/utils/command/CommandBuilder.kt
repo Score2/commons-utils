@@ -1,6 +1,7 @@
 package me.scoretwo.utils.command
 
 import me.scoretwo.utils.command.executor.CommandExecutor
+import me.scoretwo.utils.command.executor.Executors
 import me.scoretwo.utils.command.executor.TabExecutor
 import me.scoretwo.utils.command.helper.HelpGenerator
 import me.scoretwo.utils.command.language.CommandLanguage
@@ -8,9 +9,10 @@ import me.scoretwo.utils.exceptions.CommandException
 import me.scoretwo.utils.plugin.GlobalPlugin
 
 open class CommandBuilder {
-    private var plugin: GlobalPlugin? = null
     private var alias: Array<String>? = null
+    private var nexus: CommandNexus? = null
 
+    private var executors: Executors? = null
     private var commandExecutor: CommandExecutor? = null
     private var tabExecutor: TabExecutor? = null
 
@@ -20,11 +22,14 @@ open class CommandBuilder {
 
     private val subCommands = mutableListOf<SubCommand>()
 
+    fun nexus(nexus: CommandNexus?) = this.also { this.nexus = nexus }
     fun alias(alias: List<String>) = this.also { this.alias = alias.toTypedArray() }
     fun alias(vararg alias: String) = this.also { this.alias = arrayOf(*alias) }
-    fun plugin(plugin: GlobalPlugin?) = this.also { this.plugin = plugin }
+
+    fun executor(executors: Executors?) = this.also { this.executors = executors }
     fun execute(commandExecutor: CommandExecutor?) = this.also { this.commandExecutor = commandExecutor }
     fun tabComplete(tabExecutor: TabExecutor?) = this.also { this.tabExecutor = tabExecutor }
+
     fun limit(limit: SendLimit?) = this.also { this.sendLimit = limit }
     fun language(language: CommandLanguage?) = this.also { this.language = language }
     fun helpGenerator(helpGenerator: HelpGenerator?) = this.also { this.helpGenerator = helpGenerator }
@@ -33,7 +38,7 @@ open class CommandBuilder {
     fun subCommand(subCommand: SubCommand) = this.also { subCommands.add(subCommand) }
     fun subCommand(subCommands: MutableList<SubCommand>) = this.also { subCommands.addAll(subCommands) }
     fun nextBuilder() = builder()
-        .plugin(plugin)
+        .nexus(nexus)
         .language(language)
         .helpGenerator(helpGenerator)
         .limit(sendLimit)
@@ -52,18 +57,19 @@ open class CommandBuilder {
         }
     }
 
-    fun build(): SubCommand {
+    fun build(): SubCommand = this.let { builder ->
         if (alias!!.isEmpty()) throw CommandException("alias", "empty")
 
-        return object : SubCommand(plugin!!, alias!!) {}.also {
+        return@let object : SubCommand(alias!!) {
+            override val nexus = builder.nexus!!
+            override var commandExecutor = let { if (builder.executors != null) builder.executors!! else builder.commandExecutor!! }
+            override var tabExecutor = let { if (builder.executors != null) builder.executors!! else builder.tabExecutor!! }
+        }.also {
             if (sendLimit != null) it.sendLimit = sendLimit!!
             if (helpGenerator != null) it.helpGenerator = helpGenerator!!
             if (language != null) it.language = language!!
-            if (commandExecutor != null) it.commandExecutor = commandExecutor!!
-            if (tabExecutor != null) it.tabExecutor = tabExecutor!!
             it.subCommands.addAll(subCommands)
         }
-
     }
 
     companion object {

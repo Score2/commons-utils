@@ -10,35 +10,29 @@ import me.scoretwo.utils.command.language.DefaultCommandLanguage
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
+import org.apache.commons.lang.StringUtils
 
-abstract class SubCommand(val plugin: GlobalPlugin,
-                          open val alias: Array<String>,
-                          open var sendLimit: SendLimit = ALL,
-                          open var language: CommandLanguage = DefaultCommandLanguage(),
-                          open var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
-): CommandExecutor, TabExecutor {
+abstract class SubCommand(open val alias: Array<String>, open var sendLimit: SendLimit = ALL) {
 
     open var subCommands = mutableListOf<SubCommand>()
 
-    var commandExecutor = object : CommandExecutor {
-        override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
-            return true
-        }
-    }
+    abstract val nexus: CommandNexus
+    var language: CommandLanguage = DefaultCommandLanguage()
+    var helpGenerator: HelpGenerator = DefaultHelpGenerator(nexus)
 
-    var tabExecutor = object : TabExecutor {
-        override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
-            return null
-        }
-    }
+    abstract var commandExecutor: CommandExecutor
+    abstract var tabExecutor: TabExecutor
 
     fun registerBuilder() = CommandBuilder.builder()
-        .plugin(plugin)
+        .nexus(nexus)
         .helpGenerator(helpGenerator)
         .language(language)
         .limit(sendLimit)
 
-    fun register(command: SubCommand) = subCommands.add(command)
+    fun register(command: SubCommand) {
+        if (command.nexus == nexus)
+            subCommands.add(command)
+    }
 
     fun unregister(command: SubCommand) = subCommands.remove(command)
     fun unregister(alia: String): Boolean {
@@ -79,6 +73,22 @@ abstract class SubCommand(val plugin: GlobalPlugin,
             return true
         }
 
+        if (args[0].toLowerCase() == "help") {
+            val helps = helpGenerator.translateTexts(parents, args)
+            if (args.size >= 1) {
+                helps[0].forEach { sender.sendMessage(it.text) }
+                return true
+            }
+            var page = args[1].let { if (StringUtils.isNumeric(it)) it.toInt() else 0 }
+
+            if (!(0..helps.size).contains(page)) {
+                page = 0
+            }
+
+            helps[page].forEach { sender.sendMessage(it.text) }
+            return true
+        }
+
         val subCommand = findSubCommand(args[0]) ?: return execute(
             sender,
             parents.also {
@@ -91,12 +101,12 @@ abstract class SubCommand(val plugin: GlobalPlugin,
             }
         )
 
-        return subCommand.executed(sender, parents, args)
+        return subCommand.commandExecutor.execute(sender, parents, args)
     }
 
 
     /**
-     * subCommand list + tabCompleted list to return
+     * subCommand list + tabCompleted list to return.
      * 方法参考 FastScript
      */
     fun tabComplete(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
@@ -123,7 +133,7 @@ abstract class SubCommand(val plugin: GlobalPlugin,
 
             subCommands.forEach { commandNames.addAll(it.alias) }
 
-            commandNames.addAll(tabCompleted(sender, parents, args) ?: mutableListOf())
+            commandNames.addAll(tabExecutor.tabComplete(sender, parents, args) ?: mutableListOf())
 
             return commandNames
         }
@@ -147,14 +157,6 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         return null
     }
 
-    override fun executed(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
-        return true
-    }
-
-    override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
-        return null
-    }
-
     fun findSubCommand(alia: String): SubCommand? {
         subCommands.forEach { subCommand ->
             if (subCommand.alias.contains(alia))
@@ -170,7 +172,7 @@ abstract class SubCommand(val plugin: GlobalPlugin,
     }
 
     fun builder() = CommandBuilder.builder()
-        .plugin(plugin)
+        .nexus(nexus)
         .alias(*alias)
         .execute(commandExecutor)
         .tabComplete(tabExecutor)
