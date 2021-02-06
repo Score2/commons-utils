@@ -12,10 +12,10 @@ import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 
 abstract class SubCommand(val plugin: GlobalPlugin,
-                          val alias: Array<String>,
-                          var sendLimit: SendLimit = ALL,
-                          var language: CommandLanguage = DefaultCommandLanguage(),
-                          var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
+                          open val alias: Array<String>,
+                          open var sendLimit: SendLimit = ALL,
+                          open var language: CommandLanguage = DefaultCommandLanguage(),
+                          open var helpGenerator: HelpGenerator = DefaultHelpGenerator("ExamplePlugin", "1.0")
 ): CommandExecutor, TabExecutor {
 
     open var subCommands = mutableListOf<SubCommand>()
@@ -30,6 +30,25 @@ abstract class SubCommand(val plugin: GlobalPlugin,
         override fun tabCompleted(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
             return null
         }
+    }
+
+    fun registerBuilder() = CommandBuilder.builder()
+        .plugin(plugin)
+        .helpGenerator(helpGenerator)
+        .language(language)
+        .limit(sendLimit)
+
+    fun register(command: SubCommand) = subCommands.add(command)
+
+    fun unregister(command: SubCommand) = subCommands.remove(command)
+    fun unregister(alia: String): Boolean {
+        for (command in subCommands.toTypedArray()) {
+            if (command.alias.contains(alia)) {
+                subCommands.remove(command)
+                return true
+            }
+        }
+        return false
     }
 
     fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {

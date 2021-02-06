@@ -3,6 +3,7 @@ package me.scoretwo.utils.sponge.command
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.task.TaskType
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
@@ -46,8 +47,10 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
                             nexus.tabComplete(src.toGlobalSender(), mutableListOf(alia), args.all.toMutableList()) ?: mutableListOf()
 
                         override fun getUsage(src: CommandSource): Text {
-                            src.toGlobalSender().also { sender ->
-                                helpGenerator.translateTexts(mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(it.text) }
+                            plugin.server.schedule.task(plugin, TaskType.SYNC) {
+                                src.toGlobalSender().also { sender ->
+                                    helpGenerator.translateTexts(mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(it.text) }
+                                }
                             }
                             return Text.of("")
                         }

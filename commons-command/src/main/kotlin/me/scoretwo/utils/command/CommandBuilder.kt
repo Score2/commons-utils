@@ -22,17 +22,21 @@ open class CommandBuilder {
 
     fun alias(alias: List<String>) = this.also { this.alias = alias.toTypedArray() }
     fun alias(vararg alias: String) = this.also { this.alias = arrayOf(*alias) }
-    fun plugin(plugin: GlobalPlugin) = this.also { this.plugin = plugin }
-    fun execute(commandExecutor: CommandExecutor) = this.also { this.commandExecutor = commandExecutor }
-    fun tabComplete(tabExecutor: TabExecutor) = this.also { this.tabExecutor = tabExecutor }
-    fun limit(limit: SendLimit) = this.also { this.sendLimit = limit }
-    fun language(language: CommandLanguage) = this.also { this.language = language }
-    fun helpGenerator(helpGenerator: HelpGenerator) = this.also { this.helpGenerator = helpGenerator }
+    fun plugin(plugin: GlobalPlugin?) = this.also { this.plugin = plugin }
+    fun execute(commandExecutor: CommandExecutor?) = this.also { this.commandExecutor = commandExecutor }
+    fun tabComplete(tabExecutor: TabExecutor?) = this.also { this.tabExecutor = tabExecutor }
+    fun limit(limit: SendLimit?) = this.also { this.sendLimit = limit }
+    fun language(language: CommandLanguage?) = this.also { this.language = language }
+    fun helpGenerator(helpGenerator: HelpGenerator?) = this.also { this.helpGenerator = helpGenerator }
 
     fun subCommand(builder: CommandBuilder) = this.also { subCommands.add(builder.build()) }
     fun subCommand(subCommand: SubCommand) = this.also { subCommands.add(subCommand) }
     fun subCommand(subCommands: MutableList<SubCommand>) = this.also { subCommands.addAll(subCommands) }
-    fun nextBuilder() = builder().plugin(plugin!!)
+    fun nextBuilder() = builder()
+        .plugin(plugin)
+        .language(language)
+        .helpGenerator(helpGenerator)
+        .limit(sendLimit)
 
     fun reset() = this.also {
         /*

@@ -16,7 +16,7 @@ fun PluginContainer.toGlobalPlugin() = this.let { plugin ->
         customPlugins[plugin.name]!!
     else object : GlobalPlugin {
         override val server: GlobalServer = Sponge.getServer().toGlobalServer()
-        override val dataFolder: File = Sponge.getGame().gameDirectory.resolve(plugin.name).toFile()
+        override val dataFolder: File = File("config", plugin.name)
         override val pluginClassLoader = plugin.javaClass.classLoader
         override val logger: GlobalLogger = plugin.logger.toGlobalLogger()
         override val description: PluginDescription = this.let {
