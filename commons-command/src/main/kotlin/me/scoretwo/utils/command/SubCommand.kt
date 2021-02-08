@@ -142,30 +142,25 @@ abstract class SubCommand(
             return null
         }
 
-        if (args.isEmpty()) {
+        if (args.size < 1) {
             val commandAlias = mutableListOf<String>()
 
             subCommands.forEach { commandAlias.addAll(it.alias) }
 
             commandAlias.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
-            return commandAlias
+            return if (args.size == 0) findKeywordIndex(args[0], commandAlias) else commandAlias
         }
 
         for (subCommand in subCommands) {
-            if (subCommand.alias.contains(args[0])) {
+            if (!subCommand.alias.contains(args[0]))
+                continue
 
-                val parentsEditor = parents.toMutableList()
-                parentsEditor.add(args[0])
-                val rearArgs = mutableListOf<String>()
-
-                for (i in 1 until args.size) {
-                    rearArgs.add(args[i])
-                }
-
-                return subCommand.tabComplete(sender, parentsEditor, rearArgs)
-
-            }
+            return subCommand.tabComplete(
+                sender,
+                parents.toMutableList().also { it.add(args[0]) },
+                mutableListOf<String>().also { list -> (1 until args.size).mapTo(list) { args[it] } }
+            )
         }
 
         return null
@@ -181,7 +176,7 @@ abstract class SubCommand(
         return null
     }
 
-    fun toNode(array: MutableList<String>): String {
+    open fun toNode(array: MutableList<String>): String {
         var string = ""
         array.forEach { string += "${it}." }
         return string.substring(0, string.length - 1)
