@@ -10,13 +10,6 @@ import me.scoretwo.utils.command.language.DefaultCommandLanguage
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
-import org.apache.commons.lang.StringUtils
-import java.util.stream.Collectors
-
-import java.util.Arrays
-
-
-
 
 abstract class SubCommand(
     val plugin: GlobalPlugin,
@@ -97,7 +90,7 @@ abstract class SubCommand(
                 helps[0].forEach { sender.sendMessage(it.text) }
                 return true
             }
-            var page = args[1].let { if (StringUtils.isNumeric(it)) it.toInt() else 0 }
+            var page = args[1].let { if (it.matches("-?\\d+(\\.\\d+)?".toRegex())) it.toInt() else 0 }
 
             if (!(0..helps.size).contains(page)) {
                 page = 0
@@ -149,7 +142,7 @@ abstract class SubCommand(
 
             commandAlias.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
-            return if (args.size == 0) findKeywordIndex(args[0], commandAlias) else commandAlias
+            return if (args.size != 0) findKeywordIndex(args[0], commandAlias) else commandAlias
         }
 
         for (subCommand in subCommands) {
