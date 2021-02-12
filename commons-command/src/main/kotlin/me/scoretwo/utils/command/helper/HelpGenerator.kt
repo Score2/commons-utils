@@ -8,6 +8,6 @@ import net.md_5.bungee.api.chat.TextComponent
 interface HelpGenerator {
 
     // return page<lines>
-    fun translateTexts(parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>>
+    fun translateTexts(command: SubCommand, parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>>
 
 }

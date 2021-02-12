@@ -34,6 +34,8 @@ abstract class SubCommand(
         }
     }
 
+    open var description: String = "Not more..."
+
     fun registerBuilder() = CommandBuilder.builder()
         .plugin(plugin)
         .helpGenerator(helpGenerator)
@@ -80,7 +82,7 @@ abstract class SubCommand(
         }
 
         if (args.isNotEmpty() && args[0].toLowerCase() == "help") {
-            val helps = helpGenerator.translateTexts(parents, args)
+            val helps = helpGenerator.translateTexts(this, parents, args)
             if (args.size >= 1) {
                 helps[0].forEach { sender.sendMessage(it.text) }
                 return
@@ -98,7 +100,7 @@ abstract class SubCommand(
         val subCommand = (if (args.isNotEmpty()) findSubCommand(args[0]) else null) ?: if (execute(sender, parents.toTypedArray(), args.toTypedArray())) {
             return
         } else {
-            helpGenerator.translateTexts(parents, args)[0].forEach { sender.sendMessage(it.text) }
+            helpGenerator.translateTexts(this, parents, args)[0].forEach { sender.sendMessage(it.text) }
             return
         }
 

@@ -19,6 +19,7 @@ open class CommandBuilder {
     private var sendLimit: SendLimit? = null
     private var language: CommandLanguage? = null
     private var helpGenerator: HelpGenerator? = null
+    private var description: String? = null
 
     private val subCommands = mutableListOf<SubCommand>()
 
@@ -33,6 +34,7 @@ open class CommandBuilder {
     fun limit(limit: SendLimit?) = this.also { this.sendLimit = limit }
     fun language(language: CommandLanguage?) = this.also { this.language = language }
     fun helpGenerator(helpGenerator: HelpGenerator?) = this.also { this.helpGenerator = helpGenerator }
+    fun description(description: String?) = this.also { this.description = description }
 
     fun subCommand(builder: CommandBuilder) = this.also { subCommands.add(builder.build()) }
     fun subCommand(subCommand: SubCommand) = this.also { subCommands.add(subCommand) }
@@ -64,6 +66,7 @@ open class CommandBuilder {
             override var commandExecutor = let { if (builder.executors != null) builder.executors!! else builder.commandExecutor!! }
             override var tabExecutor = let { if (builder.executors != null) builder.executors!! else builder.tabExecutor!! }
         }.also {
+            if (description != null) it.description = description!!
             if (sendLimit != null) it.sendLimit = sendLimit!!
             if (helpGenerator != null) it.helpGenerator = helpGenerator!!
             if (language != null) it.language = language!!
