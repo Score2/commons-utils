@@ -30,7 +30,7 @@ abstract class SubCommand(
 
     open var commandExecutor = object : CommandExecutor {
         override fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>): Boolean {
-            return true
+            return false
         }
     }
 
@@ -56,12 +56,12 @@ abstract class SubCommand(
     open fun execute(sender: GlobalSender, parents: Array<String>, args: Array<String>) =
         commandExecutor.execute(sender, parents, args)
 
-    fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): Boolean {
+    fun execute(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>) {
         when (sendLimit) {
             PLAYER -> {
                 if (sender !is GlobalPlayer) {
                     sender.sendMessage(language.COMMAND_ONLY_PLAYER)
-                    return true
+                    return
                 }
             }
             ALL -> {
@@ -69,26 +69,21 @@ abstract class SubCommand(
             CONSOLE -> {
                 if (sender is GlobalPlayer) {
                     sender.sendMessage(language.COMMAND_ONLY_CONSOLE)
-                    return true
+                    return
                 }
             }
         }
 
         if (sendLimit.permission && !sender.hasPermission(toNode(parents).let { if (parents.size == 1) "${alias[0]}.use" else "$it.use" })) {
             sender.sendMessage(language.COMMAND_NO_PERMISSION)
-            return true
+            return
         }
 
-        if (args.isEmpty()) {
-            helpGenerator.translateTexts(parents, args)[0].forEach { sender.sendMessage(it.text) }
-            return true
-        }
-
-        if (args[0].toLowerCase() == "help") {
+        if (args.isNotEmpty() && args[0].toLowerCase() == "help") {
             val helps = helpGenerator.translateTexts(parents, args)
             if (args.size >= 1) {
                 helps[0].forEach { sender.sendMessage(it.text) }
-                return true
+                return
             }
             var page = args[1].let { if (it.matches("-?\\d+(\\.\\d+)?".toRegex())) it.toInt() else 0 }
 
@@ -97,10 +92,15 @@ abstract class SubCommand(
             }
 
             helps[page].forEach { sender.sendMessage(it.text) }
-            return true
+            return
         }
 
-        val subCommand = findSubCommand(args[0]) ?: return execute(sender, parents.toTypedArray(), args.toTypedArray())
+        val subCommand = (if (args.isNotEmpty()) findSubCommand(args[0]) else null) ?: if (execute(sender, parents.toTypedArray(), args.toTypedArray())) {
+            return
+        } else {
+            helpGenerator.translateTexts(parents, args)[0].forEach { sender.sendMessage(it.text) }
+            return
+        }
 
         return subCommand.execute(
             sender,
@@ -136,11 +136,10 @@ abstract class SubCommand(
         }
 
         if (args.size < 1) {
-            val commandAlias = mutableListOf<String>()
-
-            subCommands.forEach { commandAlias.addAll(it.alias) }
-
-            commandAlias.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
+            val commandAlias = mutableListOf<String>().also { list ->
+                subCommands.forEach { list.addAll(it.alias) }
+                list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
+            }
 
             return if (args.size != 0) findKeywordIndex(args[0], commandAlias) else commandAlias
         }
