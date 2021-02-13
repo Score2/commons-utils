@@ -39,7 +39,7 @@ abstract class SubCommand(
     // commandName, commandDescription
     open var customCommands = mutableMapOf<String, String>()
 
-    fun registerBuilder() = CommandBuilder.builder()
+    fun nextBuilder() = CommandBuilder.builder()
         .plugin(plugin)
         .helpGenerator(helpGenerator)
         .language(language)
@@ -121,23 +121,23 @@ abstract class SubCommand(
      * subCommand list + tabCompleted list to return.
      * 方法参考 FastScript
      */
-    fun tabComplete(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String>? {
+    fun tabComplete(sender: GlobalSender, parents: MutableList<String>, args: MutableList<String>): MutableList<String> {
         when (sendLimit) {
             PLAYER -> {
                 if (sender !is GlobalPlayer) {
-                    return null
+                    return mutableListOf()
                 }
             }
             ALL -> {
             }
             CONSOLE -> {
                 if (sender is GlobalPlayer) {
-                    return null
+                    return mutableListOf()
                 }
             }
         }
         if (sendLimit.permission && !sender.hasPermission(toNode(parents).let { if (parents.size == 1) "${alias[0]}.use" else "$it.use" })) {
-            return null
+            return mutableListOf()
         }
 
         if (args.size < 1) {
@@ -160,7 +160,7 @@ abstract class SubCommand(
             )
         }
 
-        return null
+        return mutableListOf()
     }
 
     fun findKeywordIndex(key: String, list: MutableList<String>) = mutableListOf<String>().also { result -> list.forEach { if (it.startsWith(key)) result.add(it) } }

@@ -63,8 +63,18 @@ open class CommandBuilder {
         if (alias!!.isEmpty()) throw CommandException("alias", "empty")
 
         return@let object : SubCommand(plugin!!, alias!!) {
-            override var commandExecutor = let { if (builder.executors != null) builder.executors!! else builder.commandExecutor!! }
-            override var tabExecutor = let { if (builder.executors != null) builder.executors!! else builder.tabExecutor!! }
+            override var commandExecutor = let {
+                if (builder.executors != null)
+                    builder.executors!!
+                else
+                    builder.commandExecutor ?: super.commandExecutor
+            }
+            override var tabExecutor = let {
+                if (builder.executors != null)
+                    builder.executors!!
+                else
+                    builder.tabExecutor ?: super.tabExecutor
+            }
         }.also {
             if (description != null) it.description = description!!
             if (sendLimit != null) it.sendLimit = sendLimit!!
