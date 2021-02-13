@@ -17,6 +17,10 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
             texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${subCommand.alias[0]} §8§l- §7${subCommand.description}"))
         }
 
+        command.customCommands.forEach {
+            texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${it.key} §8§l- §7${it.value}"))
+        }
+
         return mutableListOf(texts)
     }
 

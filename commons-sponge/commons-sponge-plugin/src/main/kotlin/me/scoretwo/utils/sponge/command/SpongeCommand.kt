@@ -59,7 +59,7 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
                 }
             )
             .executor { src, args ->
-                nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("args").toMutableList())
+                nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("help|<other>...").toMutableList())
                 CommandResult.success()
             }
             .also {

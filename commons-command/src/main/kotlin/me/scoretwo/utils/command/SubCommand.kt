@@ -36,6 +36,9 @@ abstract class SubCommand(
 
     open var description: String = "Not more..."
 
+    // commandName, commandDescription
+    open var customCommands = mutableMapOf<String, String>()
+
     fun registerBuilder() = CommandBuilder.builder()
         .plugin(plugin)
         .helpGenerator(helpGenerator)
