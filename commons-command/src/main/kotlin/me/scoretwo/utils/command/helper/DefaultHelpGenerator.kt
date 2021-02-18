@@ -14,11 +14,17 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
         texts.addAll(upperModule)
 
         command.subCommands.forEach { subCommand ->
-            texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${subCommand.alias[0]} §8§l- §7${subCommand.description}"))
+            val displayParents = parents.joinToString(" ")
+            val displayAlia = subCommand.alias[0]
+            val displayArgs = if (subCommand.moreArgs?.isEmpty() == true) "§7<args...> " else subCommand.moreArgs?.joinToString("/", "§7<", "§7> ", 8, "§8...") ?: ""
+            texts.add(TextComponent("§7/$displayParents §f$displayAlia §7$displayArgs§8§l- §7${subCommand.description}"))
         }
 
         command.customCommands.forEach {
-            texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${it.key} §8§l- §7${it.value}"))
+            val displayParents = parents.joinToString(" ")
+            val displayAlia = it.key
+            val displayArgs = it.value.first?.joinToString("/", "§7<", "§7> ", 8, "§8...") ?: ""
+            texts.add(TextComponent("§7/$displayParents §f$displayAlia §7$displayArgs§8§l- §7${it.value.second}"))
         }
 
         if (upperModule.size == texts.size) {

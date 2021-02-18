@@ -18,7 +18,7 @@ fun CommandNexus.registerBungeeCommands(): BungeeCommandSet = let { nexus ->
     BungeeCommandSet(
         mutableListOf<Command>().also { commands ->
             nexus.alias.forEach { alia: String ->
-                commands.add(object : Command(alia), TabExecutor {
+                commands.add(object : Command(alia.toLowerCase()), TabExecutor {
                     override fun execute(sender: CommandSender, args: Array<out String>) {
                         nexus.execute(sender.toGlobalSender(), mutableListOf(alia), args.toMutableList())
                     }

@@ -37,6 +37,8 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         override fun getOnlinePlayers(): Collection<GlobalPlayer> = mutableListOf<GlobalPlayer>().also { globalPlayers -> server.onlinePlayers.forEach { globalPlayers.add(it.toGlobalPlayer()) } }
         override fun isOnlinePlayer(player: GlobalPlayer) = server.onlinePlayers.contains(player.toBukkitPlayer())
         override fun isOnlinePlayer(uniqueId: UUID) = server.onlinePlayers.contains(server.getPlayer(uniqueId))
+    }.also {
+        globalServer = it
     }
 }
 

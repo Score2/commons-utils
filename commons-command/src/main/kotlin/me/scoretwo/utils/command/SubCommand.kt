@@ -24,7 +24,7 @@ abstract class SubCommand(
 
     open var tabExecutor = object : TabExecutor {
         override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
-            return null
+            return customCommands.commandNames().toMutableList()
         }
     }
 
@@ -34,10 +34,12 @@ abstract class SubCommand(
         }
     }
 
+    // 可通过检测 customCommands 或 subCommands 来代替它
+    open var moreArgs: Array<String>? = null
     open var description: String = "Not more..."
 
-    // commandName, commandDescription
-    open var customCommands = mutableMapOf<String, String>()
+    // commandName, commandMoreArgs, commandDescription
+    open var customCommands = mutableMapOf<String, Pair<Array<String>?, String>>()
 
     fun nextBuilder() = CommandBuilder.builder()
         .plugin(plugin)
@@ -191,3 +193,7 @@ abstract class SubCommand(
 
 }
 
+
+fun Map<String, Pair<Array<String>?, String>>.commandNames(): Set<String> = keys
+fun Map<String, Pair<Array<String>?, String>>.commandMoreArgs(): List<Array<String>?> = mutableListOf<Array<String>?>().also { list -> values.forEach { list.add(it.first) } }
+fun Map<String, Pair<Array<String>?, String>>.commandDescription(): List<String> = mutableListOf<String>().also { list -> values.forEach { list.add(it.second) } }
