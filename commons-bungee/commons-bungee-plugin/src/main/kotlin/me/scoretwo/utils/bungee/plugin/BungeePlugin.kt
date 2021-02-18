@@ -32,6 +32,6 @@ fun net.md_5.bungee.api.plugin.PluginDescription.toPluginDescription() = this.le
         override val name: String = desc.name
         override val version: String = desc.version
         override val description: String = desc.description.let { it ?: "No more description..." }
-        override val authors: Array<String> = arrayOf(desc.author)
+        override val authors: Array<String> = if (desc.author == null) arrayOf() else arrayOf(desc.author)
     }
 }

@@ -11,7 +11,7 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
     override fun translateTexts(command: SubCommand, parents: MutableList<String>, args: MutableList<String>): MutableList<MutableList<TextComponent>> {
         val texts = mutableListOf<TextComponent>()
 
-        texts.addAll(upperModule())
+        texts.addAll(upperModule)
 
         command.subCommands.forEach { subCommand ->
             texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${subCommand.alias[0]} §8§l- §7${subCommand.description}"))
@@ -21,10 +21,14 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
             texts.add(TextComponent("§7/${parents.joinToString(" ") { it }} §f${it.key} §8§l- §7${it.value}"))
         }
 
+        if (upperModule.size == texts.size) {
+            texts.add(TextComponent("No command data available."))
+        }
+
         return mutableListOf(texts)
     }
 
-    open fun upperModule() = mutableListOf(
+    open val upperModule = mutableListOf(
         TextComponent(""),
         TextComponent(" §3${plugin.description.name} §7v${plugin.description.version} §8§l- §eCommand§6Nexus"),
         TextComponent("")

@@ -20,7 +20,7 @@ fun CommandNexus.registerBukkitCommands(): Command = this.let { nexus ->
             return true
         }
         override fun tabComplete(sender: CommandSender, label: String, args: Array<out String>): MutableList<String> {
-            return nexus.tabComplete(sender.toGlobalSender(), mutableListOf(label), args.toMutableList()) ?: mutableListOf()
+            return nexus.tabComplete(sender.toGlobalSender(), mutableListOf(label), args.toMutableList())
         }
     }.also {
         bukkitCommandMap.register(alias[0], it)
