@@ -16,8 +16,22 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
         command.subCommands.forEach { subCommand ->
             val displayParents = parents.joinToString(" ")
             val displayAlia = subCommand.alias[0]
-            val displayArgs = if (subCommand.moreArgs?.isEmpty() == true) "§7<args...> " else subCommand.moreArgs?.joinToString("/", "§7<", "§7> ", 8, "§8...") ?: ""
-            texts.add(TextComponent("§7/$displayParents §f$displayAlia §7$displayArgs§8§l- §7${subCommand.description}"))
+            val displayAlias =
+                if (subCommand.alias.size < 2)
+                    ""
+                else
+                    subCommand.alias.slice(1 until subCommand.alias.size)
+                        .joinToString("/","§8[","§8]§7")
+
+            val displayArgs =
+                if (subCommand.subCommands.isEmpty() && subCommand.customCommands.isNotEmpty())
+                    "§7<args...> "
+                else if (subCommand.subCommands.isNotEmpty())
+                    subCommand.subCommands.joinToString("/", "§7<", "§7> ", 8, "§8...") { it.alias[0] }
+                else
+                    ""
+
+            texts.add(TextComponent("§7/$displayParents §f$displayAlia$displayAlias §7$displayArgs§8§l- §7${subCommand.description}"))
         }
 
         command.customCommands.forEach {

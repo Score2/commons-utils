@@ -34,8 +34,6 @@ abstract class SubCommand(
         }
     }
 
-    // 可通过检测 customCommands 或 subCommands 来代替它
-    open var moreArgs: Array<String>? = null
     open var description: String = "Not more..."
 
     // commandName, commandMoreArgs, commandDescription
