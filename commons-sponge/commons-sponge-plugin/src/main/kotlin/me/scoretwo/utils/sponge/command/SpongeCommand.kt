@@ -5,6 +5,7 @@ import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.server.task.TaskType
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
+import net.md_5.bungee.api.chat.BaseComponent
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.text.TextTemplate
@@ -20,7 +21,6 @@ import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.event.cause.EventContext
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
-import java.lang.StringBuilder
 
 class SpongeCommandSet(val commandSpecs: MutableList<CommandSpec>, val alias: Array<String>)
 
@@ -49,7 +49,7 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
                         override fun getUsage(src: CommandSource): Text {
                             plugin.server.schedule.task(plugin, TaskType.SYNC) {
                                 src.toGlobalSender().also { sender ->
-                                    helpGenerator.translateTexts(nexus, mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(it.text) }
+                                    helpGenerator.translateTexts(nexus, mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(*it) }
                                 }
                             }
                             return Text.of("")
@@ -78,8 +78,10 @@ fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->
         override val uniqueId: UUID = player.uniqueId
         override fun chat(message: String) { player.simulateChat(TextSerializers.FORMATTING_CODE.deserialize(message), Cause.builder().reset().build(EventContext.builder().reset().build())) }
         override val name: String = player.name
-        override fun sendMessage(message: String)  = player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(message))
-        override fun sendMessage(messages: Array<String>) = player.sendMessage(TextTemplate.of(messages))
+        override fun sendMessage(text: String) = player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(text))
+        override fun sendMessage(texts: Array<String>) = player.sendMessage(TextTemplate.of(texts.joinToString("")))
+        override fun sendMessage(text: BaseComponent) = player.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(text.toPlainText()))
+        override fun sendMessage(vararg texts: BaseComponent) = player.sendMessage(TextTemplate.of(texts.joinToString { it.toPlainText() }))
         override fun hasPermission(name: String): Boolean = player.hasPermission(name)
 
     }
@@ -90,8 +92,10 @@ fun CommandSource.toGlobalSender(): GlobalSender = this.let { sender ->
     else
         object : GlobalSender {
             override val name: String = sender.name
-            override fun sendMessage(message: String) = sender.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(message))
-            override fun sendMessage(messages: Array<String>) = sender.sendMessage(TextTemplate.of(messages))
+            override fun sendMessage(text: String) = sender.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(text))
+            override fun sendMessage(texts: Array<String>) = sender.sendMessage(TextTemplate.of(texts.joinToString("")))
+            override fun sendMessage(text: BaseComponent) = sender.sendMessage(TextSerializers.FORMATTING_CODE.deserialize(text.toPlainText()))
+            override fun sendMessage(vararg texts: BaseComponent) = sender.sendMessage(TextTemplate.of(texts.joinToString { it.toPlainText() }))
             override fun hasPermission(name: String) = sender.hasPermission(name)
         }
 

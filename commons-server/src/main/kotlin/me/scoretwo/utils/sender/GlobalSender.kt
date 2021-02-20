@@ -1,6 +1,8 @@
 package me.scoretwo.utils.sender
 
 import me.scoretwo.utils.server.globalServer
+import net.md_5.bungee.api.chat.BaseComponent
+import net.md_5.bungee.api.chat.TextComponent
 
 interface GlobalSender {
 
@@ -15,7 +17,13 @@ interface GlobalSender {
 
     fun sendMessage(text: String = "")
 
+    fun sendMessage(text: BaseComponent = TextComponent())
+
     fun sendMessage(texts: Array<String>)
+
+    fun sendMessage(vararg texts: BaseComponent)
+
+    fun sendMessage(texts: List<BaseComponent>) = sendMessage(*texts.toTypedArray())
 
     fun hasPermission(name: String): Boolean
 

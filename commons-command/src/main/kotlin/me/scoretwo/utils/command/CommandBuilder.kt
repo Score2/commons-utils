@@ -20,6 +20,7 @@ open class CommandBuilder {
     private var language: CommandLanguage? = null
     private var helpGenerator: HelpGenerator? = null
     private var description: String? = null
+    private var customCommands: MutableMap<String, Pair<Array<String>?, String>>? = null
 
     private val subCommands = mutableListOf<SubCommand>()
 
@@ -35,6 +36,7 @@ open class CommandBuilder {
     fun language(language: CommandLanguage?) = this.also { this.language = language }
     fun helpGenerator(helpGenerator: HelpGenerator?) = this.also { this.helpGenerator = helpGenerator }
     fun description(description: String?) = this.also { this.description = description }
+    fun customCommands(customCommands: MutableMap<String, Pair<Array<String>?, String>>) = this.also { this.customCommands = customCommands }
 
     fun subCommand(builder: CommandBuilder) = this.also { subCommands.add(builder.build()) }
     fun subCommand(subCommand: SubCommand) = this.also { subCommands.add(subCommand) }
@@ -80,6 +82,7 @@ open class CommandBuilder {
             if (sendLimit != null) it.sendLimit = sendLimit!!
             if (helpGenerator != null) it.helpGenerator = helpGenerator!!
             if (language != null) it.language = language!!
+            if (customCommands != null) it.customCommands = customCommands!!
             it.subCommands.addAll(subCommands)
         }
     }

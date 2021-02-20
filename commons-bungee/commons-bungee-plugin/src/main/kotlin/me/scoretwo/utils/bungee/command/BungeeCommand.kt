@@ -6,6 +6,7 @@ import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.BaseComponent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
@@ -38,8 +39,10 @@ fun ProxiedPlayer.toGlobalPlayer(): GlobalPlayer = this.let { player ->
         override val uniqueId: UUID = player.uniqueId
         override fun chat(message: String) = player.chat(message)
         override val name: String = player.name
-        override fun sendMessage(message: String) = player.sendMessage(TextComponent(message))
-        override fun sendMessage(messages: Array<String>) = player.sendMessage(*mutableListOf<TextComponent>().also { texts -> messages.forEach { texts.add(TextComponent(it)) } }.toTypedArray())
+        override fun sendMessage(text: String) = player.sendMessage(TextComponent(text))
+        override fun sendMessage(texts: Array<String>) = player.sendMessage(*mutableListOf<TextComponent>().also { list -> texts.forEach { list.add(TextComponent(it)) } }.toTypedArray())
+        override fun sendMessage(text: BaseComponent) = player.sendMessage(text)
+        override fun sendMessage(vararg texts: BaseComponent) = player.sendMessage(*texts)
         override fun hasPermission(name: String) = player.hasPermission(name)
     }
 }
@@ -51,6 +54,8 @@ fun CommandSender.toGlobalSender(): GlobalSender = this.let { sender ->
             override val name: String = sender.name
             override fun sendMessage(message: String) = sender.sendMessage(TextComponent(message))
             override fun sendMessage(messages: Array<String>) = sender.sendMessage(*mutableListOf<TextComponent>().also { texts -> messages.forEach { texts.add(TextComponent(it)) } }.toTypedArray())
+            override fun sendMessage(text: BaseComponent) = sender.sendMessage(text)
+            override fun sendMessage(vararg texts: BaseComponent) = sender.sendMessage(*texts)
             override fun hasPermission(name: String): Boolean = sender.hasPermission(name)
         }
 }

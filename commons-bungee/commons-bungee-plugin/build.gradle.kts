@@ -9,7 +9,7 @@ plugins {
 
 }
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.4-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT")
     implementation(project(":commons-server"))
     implementation(project(":commons-command"))
     implementation(project(":commons-syntaxes"))

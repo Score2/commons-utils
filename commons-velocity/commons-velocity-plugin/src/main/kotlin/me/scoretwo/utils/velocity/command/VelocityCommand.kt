@@ -1,18 +1,16 @@
 package me.scoretwo.utils.velocity.command
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.velocitypowered.api.command.Command
 import com.velocitypowered.api.command.CommandSource
 import com.velocitypowered.api.command.SimpleCommand
 import com.velocitypowered.api.proxy.Player
-import com.velocitypowered.api.proxy.ProxyServer
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.velocity.server.proxyServer
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer
 import java.util.*
-import net.kyori.adventure.text.format.NamedTextColor
+import net.md_5.bungee.api.chat.BaseComponent
 
 fun CommandNexus.registerVelocityCommands(): Command = let { nexus ->
     SimpleCommand { invocation ->
@@ -27,8 +25,10 @@ fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->
         override val uniqueId: UUID = player.uniqueId
         override fun chat(message: String) { player.spoofChatInput(message) }
         override val name: String = player.username
-        override fun sendMessage(message: String) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(message))
-        override fun sendMessage(messages: Array<String>) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(messages.toString()))
+        override fun sendMessage(text: String) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(text))
+        override fun sendMessage(texts: Array<String>) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(texts.joinToString("")))
+        override fun sendMessage(text: BaseComponent) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(text.toPlainText()))
+        override fun sendMessage(vararg texts: BaseComponent) = player.sendMessage(LegacyComponentSerializer.legacy().deserialize(texts.joinToString { it.toPlainText() }))
         override fun hasPermission(name: String): Boolean = player.hasPermission(name)
 
     }
@@ -39,8 +39,10 @@ fun CommandSource.toGlobalSender(): GlobalSender = this.let { sender ->
     else
         object : GlobalSender {
             override val name: String = "CONSOLE"
-            override fun sendMessage(message: String) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(message))
-            override fun sendMessage(messages: Array<String>) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(messages.toString()))
+            override fun sendMessage(text: String) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(text))
+            override fun sendMessage(texts: Array<String>) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(texts.joinToString("")))
+            override fun sendMessage(text: BaseComponent) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(text.toPlainText()))
+            override fun sendMessage(vararg texts: BaseComponent) = sender.sendMessage(LegacyComponentSerializer.legacy().deserialize(texts.joinToString { it.toPlainText() }))
             override fun hasPermission(name: String) = sender.hasPermission(name)
         }
 

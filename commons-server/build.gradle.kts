@@ -12,6 +12,7 @@ dependencies {
     testImplementation("com.andreapivetta.kolor:kolor:1.0.0")
     testImplementation("junit:junit:4.13.1")
     compileOnly("org.slf4j:slf4j-log4j12:1.7.30")
+    compileOnly("net.md-5:bungeecord-chat:1.16-R0.5-SNAPSHOT")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

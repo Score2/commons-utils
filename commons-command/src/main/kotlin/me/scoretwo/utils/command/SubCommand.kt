@@ -87,7 +87,7 @@ abstract class SubCommand(
         if (args.isNotEmpty() && args[0].toLowerCase() == "help") {
             val helps = helpGenerator.translateTexts(this, parents, args)
             if (args.size >= 1) {
-                helps[0].forEach { sender.sendMessage(it.text) }
+                helps[0].forEach { sender.sendMessage(*it) }
                 return
             }
             var page = args[1].let { if (it.matches("-?\\d+(\\.\\d+)?".toRegex())) it.toInt() else 0 }
@@ -96,14 +96,14 @@ abstract class SubCommand(
                 page = 0
             }
 
-            helps[page].forEach { sender.sendMessage(it.text) }
+            helps[page].forEach { sender.sendMessage(*it) }
             return
         }
 
         val subCommand = (if (args.isNotEmpty()) findSubCommand(args[0]) else null) ?: if (execute(sender, parents.toTypedArray(), args.toTypedArray())) {
             return
         } else {
-            helpGenerator.translateTexts(this, parents, args)[0].forEach { sender.sendMessage(it.text) }
+            helpGenerator.translateTexts(this, parents, args)[0].forEach { sender.sendMessage(*it) }
             return
         }
 
@@ -140,7 +140,7 @@ abstract class SubCommand(
             return mutableListOf()
         }
 
-        if (args.size < 1) {
+        if (args.size < 2) {
             val commandAlias = mutableListOf<String>().also { list ->
                 subCommands.forEach { list.addAll(it.alias) }
                 list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
@@ -159,7 +159,6 @@ abstract class SubCommand(
                 mutableListOf<String>().also { list -> (1 until args.size).mapTo(list) { args[it] } }
             )
         }
-
         return mutableListOf()
     }
 
