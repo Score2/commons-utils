@@ -144,6 +144,10 @@ abstract class SubCommand(
             val commandAlias = mutableListOf<String>().also { list ->
                 subCommands.forEach { list.addAll(it.alias) }
                 list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
+
+                if (list.isNotEmpty()) {
+                    list.add(0, "help")
+                }
             }
 
             return if (args.size != 0) findKeywordIndex(args[0], commandAlias) else commandAlias

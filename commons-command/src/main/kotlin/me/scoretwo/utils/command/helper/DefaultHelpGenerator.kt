@@ -31,22 +31,22 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
             val displayArgs =
                 if (subCommand.subCommands.isEmpty() && subCommand.customCommands.isNotEmpty())
                     "§7<args...> "
-                else if (subCommand.subCommands.isNotEmpty())
-                    subCommand.subCommands.joinToString("/", "§7<", "§7> ", 8, "§8...") { it.alias[0] }
-                else
+                else if (subCommand.subCommands.isNotEmpty()) {
+                    subCommand.subCommands.joinToString("/", "§7<", "§7> ", 5, "§8...") { it.alias[0] }
+                } else
                     ""
 
             texts.add(arrayOf(TextComponent("§7/$displayParents §f$displayAlia$displayAlias §7$displayArgs§8§l- §7${subCommand.description}").also {
-                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7Click insert command: §f"))
+                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7Click insert command: §f/$displayParents $displayAlia"))
                 it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents $displayAlia ")
             }))
         }
 
         command.customCommands.forEach {
             val displayAlia = it.key
-            val displayArgs = it.value.first?.joinToString("/", "§7<", "§7> ", 8, "§8...") ?: ""
+            val displayArgs = it.value.first?.joinToString("/", "§7<", "§7> ", 5, "§8...") ?: ""
             texts.add(arrayOf(TextComponent("§7/$displayParents §f$displayAlia §7$displayArgs§8§l- §7${it.value.second}").also {
-                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7Click insert command: §f"))
+                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text("§7Click insert command: §f/$displayParents $displayAlia"))
                 it.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/$displayParents $displayAlia ")
             }))
         }
@@ -65,26 +65,30 @@ open class DefaultHelpGenerator(val plugin: GlobalPlugin): HelpGenerator {
         arrayOf(TextComponent("")),
         arrayOf(
             TextComponent(" §3${plugin.description.name} §7v${plugin.description.version}").also {
-                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(arrayOf(
-                    TextComponent("§7Plugin: §a${plugin.description.name}"),
-                    TextComponent("§7Description: §f${plugin.description.description}"),
-                    TextComponent("§7Authors: §6${plugin.description.authors.joinToString(", ")}"),
-                    TextComponent("§7Version: §b${plugin.description.version}")
-                )))
+                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(
+                    """
+                        §7Plugin: §a${plugin.description.name}
+                        §7Description: §f${plugin.description.description}
+                        §7Authors: §6${plugin.description.authors.joinToString(", ")}
+                        §7Version: §b${plugin.description.version}
+                    """.trimIndent()
+                ))
             },
             TextComponent(" §8§l- "),
             TextComponent("§eCommand§6Nexus").also {
-                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(arrayOf(
-                    TextComponent(""),
-                    TextComponent("§cPowered by Score2"),
-                    TextComponent("")
-                )))
+                it.hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, Text(
+                    """
+                        
+                        §c@Powered by Score2's §e§lcommons-utils
+                        
+                    """.trimIndent()
+                ))
             }
         ),
         arrayOf(TextComponent(""))
     )
 
-    fun dividingLineModule(nowPage: Int, maxPage: Int): TextComponent {
+    open fun dividingLineModule(nowPage: Int, maxPage: Int): TextComponent {
         return TextComponent()
     }
 }
