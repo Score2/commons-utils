@@ -17,6 +17,7 @@ import me.scoretwo.utils.server.task.globalTasks
 import me.scoretwo.utils.velocity.command.toGlobalPlayer
 import me.scoretwo.utils.velocity.command.toGlobalSender
 import me.scoretwo.utils.velocity.command.toVelocityPlayer
+import me.scoretwo.utils.velocity.command.toVelocitySender
 import me.scoretwo.utils.velocity.plugin.toVelocityPlugin
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,6 +39,8 @@ fun ProxyServer.toGlobalServer(): GlobalServer = this.let { server ->
         override fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer> = server.getPlayer(uniqueId).let {
             if (it.isPresent) Optional.ofNullable(it.get().toGlobalPlayer()) else Optional.empty<GlobalPlayer>()
         }
+
+        override fun dispatchCommand(sender: GlobalSender, command: String) = server.commandManager.execute(sender.toVelocitySender(), command)
         override fun getOnlinePlayers(): Collection<GlobalPlayer> = mutableListOf<GlobalPlayer>().also { globalPlayers -> server.allPlayers.forEach { globalPlayers.add(it.toGlobalPlayer()) } }
         override fun isOnlinePlayer(player: GlobalPlayer) = server.allPlayers.contains(player.toVelocityPlayer())
         override fun isOnlinePlayer(uniqueId: UUID) = server.getPlayer(uniqueId).isPresent

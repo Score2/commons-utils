@@ -1,6 +1,7 @@
 package me.scoretwo.utils.bungee.server
 
 import me.scoretwo.utils.bungee.command.toBungeePlayer
+import me.scoretwo.utils.bungee.command.toBungeeSender
 import me.scoretwo.utils.bungee.command.toGlobalPlayer
 import me.scoretwo.utils.bungee.command.toGlobalSender
 import me.scoretwo.utils.bungee.plugin.toBungeePlugin
@@ -33,6 +34,7 @@ fun ProxyServer.toGlobalServer(): GlobalServer = this.let { server ->
         override val console = server.console.toGlobalSender()
         override fun getPlayer(username: String): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(username)?.toGlobalPlayer())
         override fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(uniqueId)?.toGlobalPlayer())
+        override fun dispatchCommand(sender: GlobalSender, command: String) = try { server.pluginManager.dispatchCommand(sender.toBungeeSender(), command) } catch (e: Throwable) { false }
         override fun getOnlinePlayers(): Collection<GlobalPlayer> = mutableListOf<GlobalPlayer>().also { globalPlayers -> server.players.forEach { globalPlayers.add(it.toGlobalPlayer()) } }
         override fun isOnlinePlayer(player: GlobalPlayer) = server.players.contains(player.toBungeePlayer())
         override fun isOnlinePlayer(uniqueId: UUID) = server.players.contains(server.getPlayer(uniqueId))

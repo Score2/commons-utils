@@ -46,6 +46,7 @@ abstract class SubCommand(
         .limit(sendLimit)
 
     fun register(command: SubCommand) = subCommands.add(command)
+    fun register(commandBuilder: CommandBuilder) = subCommands.add(commandBuilder.build())
 
     fun unregister(command: SubCommand) = subCommands.remove(command)
     fun unregister(alia: String): Boolean {

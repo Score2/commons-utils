@@ -14,11 +14,13 @@ import me.scoretwo.utils.server.task.globalTasks
 import me.scoretwo.utils.sponge.command.toGlobalSender
 import me.scoretwo.utils.sponge.command.toGlobalPlayer
 import me.scoretwo.utils.sponge.command.toSpongePlayer
+import me.scoretwo.utils.sponge.command.toSpongeSender
 import me.scoretwo.utils.sponge.plugin.toGlobalPlugin
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import org.spongepowered.api.Platform
 import org.spongepowered.api.Server
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.scheduler.Task
 import org.spongepowered.api.service.permission.Subject
 import java.util.*
@@ -39,6 +41,8 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         override fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer> = server.getPlayer(uniqueId).let {
             if (it.isPresent) Optional.ofNullable(it.get().toGlobalPlayer()) else Optional.empty<GlobalPlayer>()
         }
+
+        override fun dispatchCommand(sender: GlobalSender, command: String) = Sponge.getCommandManager().process(sender.toSpongeSender(), command).equals(CommandResult.success())
         override fun getOnlinePlayers(): Collection<GlobalPlayer> = mutableListOf<GlobalPlayer>().also { globalPlayers -> server.onlinePlayers.forEach { globalPlayers.add(it.toGlobalPlayer()) } }
         override fun isOnlinePlayer(player: GlobalPlayer) = server.onlinePlayers.contains(player.toSpongePlayer())
         override fun isOnlinePlayer(uniqueId: UUID) = server.getPlayer(uniqueId).isPresent

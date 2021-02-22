@@ -44,7 +44,8 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
                         }
 
                         override fun complete(src: CommandSource, args: CommandArgs, context: CommandContext) =
-                            nexus.tabComplete(src.toGlobalSender(), mutableListOf(alia), args.all.toMutableList()) ?: mutableListOf()
+                            nexus.tabComplete(src.toGlobalSender(), mutableListOf(alia),
+                                mutableListOf(*args.all.toTypedArray(), ""))
 
                         override fun getUsage(src: CommandSource): Text {
                             plugin.server.schedule.task(plugin, TaskType.SYNC) {
@@ -59,7 +60,7 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
                 }
             )
             .executor { src, args ->
-                nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("help|<other>...").toMutableList())
+                nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("help|<other>...").joinToString("").split(" ").toMutableList())
                 CommandResult.success()
             }
             .also {

@@ -15,7 +15,9 @@ interface GlobalSender {
         }
     }
 
-    fun sendMessage(text: String = "")
+    fun sendMessage() = sendMessage("")
+
+    fun sendMessage(text: String)
 
     fun sendMessage(text: BaseComponent = TextComponent())
 

@@ -23,6 +23,8 @@ interface GlobalServer {
     fun isOnlinePlayer(player: GlobalPlayer): Boolean
     fun isOnlinePlayer(uniqueId: UUID): Boolean
 
+    fun dispatchCommand(sender: GlobalSender, command: String): Boolean
+
     fun broadcast(text: String) = broadcast(TextComponent(text))
     fun broadcast(texts: Array<String>) = broadcast(texts.joinToString(""))
     fun broadcast(text: BaseComponent) = broadcast(arrayOf(text))
