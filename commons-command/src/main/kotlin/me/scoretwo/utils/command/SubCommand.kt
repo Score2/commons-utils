@@ -141,7 +141,7 @@ abstract class SubCommand(
             return mutableListOf()
         }
 
-        if (args.size < 2) {
+/*        if (args.size < 2) {
             val commandAlias = mutableListOf<String>().also { list ->
                 subCommands.forEach { list.addAll(it.alias) }
                 list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
@@ -151,20 +151,35 @@ abstract class SubCommand(
                 }
             }
 
-            return if (args.size != 0) findKeywordIndex(args[0], commandAlias) else commandAlias
+            return if (args.size >= 1) findKeywordIndex(args[args.size - 1], commandAlias) else commandAlias
+        }
+        */
+        val commands = mutableListOf<String>()
+        let {
+            val commandAlias = mutableListOf<String>().also { list ->
+                if (args.size < 2) subCommands.forEach { list.addAll(it.alias) }
+
+                list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
+
+                if (list.isNotEmpty()) {
+                    list.add(0, "help")
+                }
+            }
+
+            commands.addAll(if (args.size >= 1) findKeywordIndex(args[args.size - 1], commandAlias) else commandAlias)
         }
 
         for (subCommand in subCommands) {
-            if (!subCommand.alias.contains(args[0]))
+            if (args.isEmpty() || !subCommand.alias.contains(args[0]))
                 continue
 
-            return subCommand.tabComplete(
+            commands.addAll(subCommand.tabComplete(
                 sender,
                 parents.toMutableList().also { it.add(args[0]) },
                 mutableListOf<String>().also { list -> (1 until args.size).mapTo(list) { args[it] } }
-            )
+            ))
         }
-        return mutableListOf()
+        return commands
     }
 
     fun findKeywordIndex(key: String, list: MutableList<String>) = mutableListOf<String>().also { result -> list.forEach { if (it.startsWith(key)) result.add(it) } }
