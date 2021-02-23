@@ -161,7 +161,7 @@ abstract class SubCommand(
 
                 list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
-                if (list.isNotEmpty()) {
+                if (list.isNotEmpty() && subCommands.isNotEmpty() || customCommands.isNotEmpty()) {
                     list.add(0, "help")
                 }
             }
