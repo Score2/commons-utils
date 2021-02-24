@@ -18,7 +18,7 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")//
 
     implementation(project(":commons-server"))
-    implementation(project(":commons-command"))
+
     implementation(project(":commons-syntaxes"))
     implementation(project(":commons-velocity:commons-velocity-plugin"))
 }
@@ -29,7 +29,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         include(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency(":commons-server"))
-        include(dependency(":commons-command"))
+
         include(dependency(":commons-syntaxes"))
         include(dependency(":commons-velocity-plugin"))
     }

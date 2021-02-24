@@ -1,11 +1,10 @@
 package me.scoretwo.utils.bukkit.server
 
-import me.scoretwo.utils.bukkit.command.toBukkitPlayer
-import me.scoretwo.utils.bukkit.command.toBukkitSender
-import me.scoretwo.utils.bukkit.command.toGlobalPlayer
-import me.scoretwo.utils.bukkit.command.toGlobalSender
+import me.scoretwo.utils.bukkit.command.*
 import me.scoretwo.utils.bukkit.plugin.toBukkitPlugin
 import me.scoretwo.utils.bukkit.plugin.toGlobalPlugin
+import me.scoretwo.utils.command.CommandNexus
+import me.scoretwo.utils.command.GlobalCommandMap
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -33,6 +32,17 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         override val version = server.version
         override val schedule = server.scheduler.toGlobalScheduler()
         override val console: GlobalSender = server.consoleSender.toGlobalSender()
+        override val commandMap = object : GlobalCommandMap() {
+            override fun register(nexus: CommandNexus) {
+                super.register(nexus)
+                nexus.registerBukkitCommands()
+            }
+
+            override fun unregister(nexus: CommandNexus) {
+                super.unregister(nexus)
+                nexus.unregisterBukkitCommand()
+            }
+        }
         override fun getPlayer(username: String): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(username)?.toGlobalPlayer())
         override fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(uniqueId)?.toGlobalPlayer())
         override fun dispatchCommand(sender: GlobalSender, command: String) = try { server.dispatchCommand(sender.toBukkitSender(), command) } catch (e: Throwable) { false }

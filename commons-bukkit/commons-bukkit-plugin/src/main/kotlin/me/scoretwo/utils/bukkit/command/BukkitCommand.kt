@@ -15,6 +15,9 @@ import java.util.*
 val bukkitCommandMap = Bukkit.getServer().javaClass.getDeclaredMethod("getCommandMap").invoke(Bukkit.getServer()) as SimpleCommandMap
 
 fun CommandNexus.registerBukkitCommands(): Command = this.let { nexus ->
+    if (nexus.shadowInstance != null || nexus.shadowInstance is Command) {
+        throw Exception("This CommandNexus has already been registered!")
+    }
     object : Command(nexus.alias[0], "", "/${nexus.alias[0]}", nexus.alias.slice(1 until nexus.alias.size)) {
         override fun execute(sender: CommandSender, label: String, args: Array<out String>): Boolean {
             nexus.execute(sender.toGlobalSender(), mutableListOf(label), args.toMutableList())
@@ -25,7 +28,17 @@ fun CommandNexus.registerBukkitCommands(): Command = this.let { nexus ->
         }
     }.also {
         bukkitCommandMap.register(alias[0], it)
+        nexus.shadowInstance = it
     }
+}
+
+fun CommandNexus.unregisterBukkitCommand(): Boolean = this.let { nexus ->
+    if (nexus.shadowInstance == null || nexus.shadowInstance !is Command) {
+        return@let false
+    }
+    val result = (nexus.shadowInstance as Command).unregister(bukkitCommandMap)
+    nexus.shadowInstance = null
+    return@let result
 }
 
 fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->

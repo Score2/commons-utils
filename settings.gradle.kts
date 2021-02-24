@@ -54,7 +54,6 @@ class MergeBuilder {
 }
 
 include("commons-syntaxes")
-include("commons-command")
 include("commons-server")
 include("commons-language")
 

@@ -17,7 +17,7 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")
     compileOnly("org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT")
     implementation(project(":commons-server"))
-    implementation(project(":commons-command"))
+
     implementation(project(":commons-syntaxes"))
 }
 
@@ -27,7 +27,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency(":commons-server"))
-        include(dependency(":commons-command"))
+
         include(dependency(":commons-syntaxes"))
     }
     classifier = null

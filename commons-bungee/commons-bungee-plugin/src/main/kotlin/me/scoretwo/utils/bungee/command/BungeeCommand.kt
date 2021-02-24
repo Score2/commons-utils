@@ -34,6 +34,16 @@ fun CommandNexus.registerBungeeCommands(): BungeeCommandSet = let { nexus ->
     )
 }
 
+fun CommandNexus.unregisterBungeeCommand(): Boolean = this.let { nexus ->
+    if (nexus.shadowInstance == null || nexus.shadowInstance !is Command) {
+        return@let false
+    }
+
+    ProxyServer.getInstance().pluginManager.unregisterCommand(nexus.shadowInstance as Command)
+    nexus.shadowInstance = null
+    return@let true
+}
+
 fun ProxiedPlayer.toGlobalPlayer(): GlobalPlayer = this.let { player ->
     object : GlobalPlayer {
         override val uniqueId: UUID = player.uniqueId

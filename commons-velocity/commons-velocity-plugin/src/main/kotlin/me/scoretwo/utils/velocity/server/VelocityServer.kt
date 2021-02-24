@@ -3,6 +3,8 @@ package me.scoretwo.utils.velocity.server
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.scheduler.ScheduledTask
 import com.velocitypowered.api.scheduler.Scheduler
+import me.scoretwo.utils.command.CommandNexus
+import me.scoretwo.utils.command.GlobalCommandMap
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -14,10 +16,7 @@ import me.scoretwo.utils.server.task.GlobalSchedule
 import me.scoretwo.utils.server.task.GlobalTask
 import me.scoretwo.utils.server.task.TaskType
 import me.scoretwo.utils.server.task.globalTasks
-import me.scoretwo.utils.velocity.command.toGlobalPlayer
-import me.scoretwo.utils.velocity.command.toGlobalSender
-import me.scoretwo.utils.velocity.command.toVelocityPlayer
-import me.scoretwo.utils.velocity.command.toVelocitySender
+import me.scoretwo.utils.velocity.command.*
 import me.scoretwo.utils.velocity.plugin.toVelocityPlugin
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -33,6 +32,17 @@ fun ProxyServer.toGlobalServer(): GlobalServer = this.let { server ->
         override val version = server.version.version
         override val schedule = server.scheduler.toGlobalScheduler()
         override val console: GlobalSender = server.consoleCommandSource.toGlobalSender()
+        override val commandMap = object : GlobalCommandMap() {
+            override fun register(nexus: CommandNexus) {
+                super.register(nexus)
+                nexus.registerVelocityCommands()
+            }
+
+            override fun unregister(nexus: CommandNexus) {
+                super.unregister(nexus)
+                nexus.unregisterVelocityCommand()
+            }
+        }
         override fun getPlayer(username: String): Optional<GlobalPlayer> = server.getPlayer(username).let {
             if (it.isPresent) Optional.ofNullable(it.get().toGlobalPlayer()) else Optional.empty<GlobalPlayer>()
         }

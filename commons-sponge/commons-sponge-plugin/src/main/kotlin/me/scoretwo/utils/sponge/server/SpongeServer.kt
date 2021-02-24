@@ -1,5 +1,7 @@
 package me.scoretwo.utils.sponge.server
 
+import me.scoretwo.utils.command.CommandNexus
+import me.scoretwo.utils.command.GlobalCommandMap
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -11,10 +13,7 @@ import me.scoretwo.utils.server.task.GlobalSchedule
 import me.scoretwo.utils.server.task.GlobalTask
 import me.scoretwo.utils.server.task.TaskType
 import me.scoretwo.utils.server.task.globalTasks
-import me.scoretwo.utils.sponge.command.toGlobalSender
-import me.scoretwo.utils.sponge.command.toGlobalPlayer
-import me.scoretwo.utils.sponge.command.toSpongePlayer
-import me.scoretwo.utils.sponge.command.toSpongeSender
+import me.scoretwo.utils.sponge.command.*
 import me.scoretwo.utils.sponge.plugin.toGlobalPlugin
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import org.spongepowered.api.Platform
@@ -35,6 +34,17 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         override val version = "${Sponge.getGame().platform.getContainer(Platform.Component.API).version.get()}.x.x"
         override val schedule = Task.builder().toGlobalScheduler()
         override val console: GlobalSender = server.console.toGlobalSender()
+        override val commandMap = object : GlobalCommandMap() {
+            override fun register(nexus: CommandNexus) {
+                super.register(nexus)
+                nexus.registerSpongeCommands()
+            }
+
+            override fun unregister(nexus: CommandNexus) {
+                super.unregister(nexus)
+                nexus.unregisterSpongeCommand()
+            }
+        }
         override fun getPlayer(username: String): Optional<GlobalPlayer> = server.getPlayer(username).let {
             if (it.isPresent) Optional.ofNullable(it.get().toGlobalPlayer()) else Optional.empty<GlobalPlayer>()
         }

@@ -3,6 +3,7 @@ package me.scoretwo.utils.sponge.command
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
+import me.scoretwo.utils.server.getOrNull
 import me.scoretwo.utils.server.task.TaskType
 import me.scoretwo.utils.sponge.plugin.toSpongePlugin
 import net.md_5.bungee.api.chat.BaseComponent
@@ -11,6 +12,7 @@ import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.text.TextTemplate
 import java.util.*
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.command.CommandMapping
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.command.args.CommandArgs
@@ -22,13 +24,12 @@ import org.spongepowered.api.event.cause.EventContext
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 
-class SpongeCommandSet(val commandSpecs: MutableList<CommandSpec>, val alias: Array<String>)
+class SpongeCommandMappings(val commandMappings: MutableList<CommandMapping>)
 
-fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
-    val commandSpecs = mutableListOf<CommandSpec>()
+fun CommandNexus.registerSpongeCommands(): SpongeCommandMappings = let { nexus ->
+    val commandMappings = mutableListOf<CommandMapping>()
     for (alia in nexus.alias) {
-        commandSpecs.add(
-            CommandSpec.builder()
+        val builder = CommandSpec.builder()
             // 需要测试
             .arguments(
                 GenericArguments.remainingJoinedStrings(Text.of("help|<other>...")).let {
@@ -62,16 +63,26 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandSet = let { nexus ->
             .executor { src, args ->
                 nexus.execute(src.toGlobalSender(), mutableListOf(alia), args.getAll<String>("help|<other>...").joinToString("").split(" ").toMutableList())
                 CommandResult.success()
-            }
-            .also {
+            }.also {
                 if (nexus.sendLimit.permission)
                     it.permission("${nexus.alias[0]}.use")
-                Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin(), it.build(), alia)
-            }.build()
-        )
+
+            }
+        commandMappings.add(Sponge.getCommandManager().register(nexus.plugin.toSpongePlugin(), builder.build(), alia).getOrNull() ?: continue)
     }
 
-    SpongeCommandSet(commandSpecs, nexus.alias)
+    return@let SpongeCommandMappings(commandMappings).also { nexus.shadowInstance = it }
+}
+
+fun CommandNexus.unregisterSpongeCommand(): Boolean = this.let { nexus ->
+    if (nexus.shadowInstance == null || nexus.shadowInstance !is SpongeCommandMappings) {
+        return@let false
+    }
+    (nexus.shadowInstance as SpongeCommandMappings).commandMappings.forEach {
+        Sponge.getCommandManager().removeMapping(it)
+    }
+    nexus.shadowInstance = null
+    return@let true
 }
 
 fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->

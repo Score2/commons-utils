@@ -1,5 +1,6 @@
 package me.scoretwo.utils.server
 
+import me.scoretwo.utils.command.GlobalCommandMap
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
 import me.scoretwo.utils.server.task.GlobalSchedule
@@ -14,6 +15,7 @@ interface GlobalServer {
     val version: String
     val schedule: GlobalSchedule
     val console: GlobalSender
+    val commandMap: GlobalCommandMap
 
     fun getPlayer(username: String): Optional<GlobalPlayer>
     fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer>
@@ -33,3 +35,5 @@ interface GlobalServer {
 }
 fun isGlobalServerAvailable() = ::globalServer.isInitialized
 lateinit var globalServer: GlobalServer
+
+fun <T> Optional<T>.getOrNull(): T? = try { get() } catch (t: Throwable) { null }

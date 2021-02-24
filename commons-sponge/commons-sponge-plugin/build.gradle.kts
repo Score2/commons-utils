@@ -16,7 +16,7 @@ repositories {
 dependencies {
     compileOnly("org.spongepowered:spongeapi:7.3.0")
     implementation(project(":commons-server"))
-    implementation(project(":commons-command"))
+
     implementation(project(":commons-syntaxes"))
     implementation("net.md-5:bungeecord-chat:1.16-R0.3")
 }
@@ -27,7 +27,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
         exclude(dependency("org.jetbrains.kotlin:kotlin-stdlib-common"))
 
         include(dependency(":commons-server"))
-        include(dependency(":commons-command"))
+
         include(dependency(":commons-syntaxes"))
     }
     classifier = null

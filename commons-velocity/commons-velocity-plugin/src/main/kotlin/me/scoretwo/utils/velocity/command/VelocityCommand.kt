@@ -20,6 +20,15 @@ fun CommandNexus.registerVelocityCommands(): Command = let { nexus ->
     }
 }
 
+fun CommandNexus.unregisterVelocityCommand(): Boolean = this.let { nexus ->
+    if (nexus.shadowInstance == null || nexus.shadowInstance !is Command) {
+        return@let false
+    }
+    proxyServer.commandManager.unregister(nexus.alias[0])
+    nexus.shadowInstance = null
+    return@let true
+}
+
 fun Player.toGlobalPlayer(): GlobalPlayer = this.let { player ->
     object : GlobalPlayer {
         override val uniqueId: UUID = player.uniqueId
