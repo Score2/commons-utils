@@ -49,11 +49,9 @@ fun CommandNexus.registerSpongeCommands(): SpongeCommandMappings = let { nexus -
                                 mutableListOf(*args.all.toTypedArray(), ""))
 
                         override fun getUsage(src: CommandSource): Text {
-                            plugin.server.schedule.task(plugin, TaskType.SYNC) {
-                                src.toGlobalSender().also { sender ->
-                                    helpGenerator.translateTexts(nexus, mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(*it) }
-                                }
-                            }
+                            plugin.server.schedule.task(plugin, TaskType.SYNC, Runnable { src.toGlobalSender().also { sender ->
+                                helpGenerator.translateTexts(nexus, mutableListOf(alia), mutableListOf())[0].forEach { sender.sendMessage(*it) }
+                            } })
                             return Text.of("")
                         }
 
