@@ -14,13 +14,12 @@ import me.scoretwo.utils.sender.GlobalSender
 abstract class SubCommand(
     val plugin: GlobalPlugin,
     open val alias: Array<String>,
-    open var sendLimit: SendLimit = ALL
+    open var sendLimit: SendLimit = ALL,
+    open var language: CommandLanguage = DefaultCommandLanguage(),
+    open var helpGenerator: HelpGenerator = DefaultHelpGenerator(plugin)
 ) {
 
     open var subCommands = mutableListOf<SubCommand>()
-
-    open var language: CommandLanguage = DefaultCommandLanguage()
-    open var helpGenerator: HelpGenerator = DefaultHelpGenerator(plugin)
 
     open var tabExecutor = object : TabExecutor {
         override fun tabComplete(sender: GlobalSender, parents: Array<String>, args: Array<String>): MutableList<String>? {
@@ -39,7 +38,7 @@ abstract class SubCommand(
     // commandName, commandMoreArgs, commandDescription
     open var customCommands = mutableMapOf<String, Pair<Array<String>?, String>>()
 
-    fun nextBuilder() = CommandBuilder.builder()
+    open fun nextBuilder() = CommandBuilder.builder()
         .plugin(plugin)
         .helpGenerator(helpGenerator)
         .language(language)
@@ -161,7 +160,7 @@ abstract class SubCommand(
 
                 list.addAll(tabComplete(sender, parents.toTypedArray(), args.toTypedArray()) ?: mutableListOf())
 
-                if (list.isNotEmpty() && subCommands.isNotEmpty() || customCommands.isNotEmpty()) {
+                if (list.isNotEmpty()) {
                     list.add(0, "help")
                 }
             }
@@ -182,7 +181,8 @@ abstract class SubCommand(
         return commands
     }
 
-    fun findKeywordIndex(key: String, list: MutableList<String>) = mutableListOf<String>().also { result -> list.forEach { if (it.startsWith(key)) result.add(it) } }
+    fun findKeywordIndex(key: String, list: MutableList<String>) =
+        mutableListOf<String>().also { result -> list.forEach { if (it.toLowerCase().startsWith(key.toLowerCase())) result.add(it) } }
 
     fun findSubCommand(alia: String): SubCommand? {
         for (subCommand in subCommands) {
