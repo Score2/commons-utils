@@ -15,16 +15,13 @@ fun File.saveConfiguration(yamlConfiguration: YamlConfiguration) {
 
 val ConfigurationSection.keys: List<String> get() = getKeys(false).toList()
 
-fun ConfigurationSection.getLowerCaseNode(path: String): String {
-    for (node in getKeys(true)) {
-        if (node.equals(path, ignoreCase = true)) {
-            return node
-        }
-    }
-    return path
-}
+@Deprecated("There is a better alternative", ReplaceWith("ignoreCase(path)"))
+fun ConfigurationSection.getLowerCaseNode(path: String) = ignoreCase(path)
 
-fun ConfigurationSection.getUpperCaseNode(path: String): String {
+@Deprecated("There is a better alternative", ReplaceWith("ignoreCase(path)"))
+fun ConfigurationSection.getUpperCaseNode(path: String) = ignoreCase(path)
+
+fun ConfigurationSection.ignoreCase(path: String): String {
     for (node in getKeys(true)) {
         if (node.equals(path, ignoreCase = true)) {
             return node
