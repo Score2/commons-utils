@@ -17,10 +17,12 @@ defaultTasks = mutableListOf("publishToMavenLocal")
 allprojects {
     repositories {
         jcenter()
+        maven("https://maven.aliyun.com/repository/central")
         mavenCentral()
         mavenLocal()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/sonatype-nexus-snapshots/")
+        maven("https://repo.opencollab.dev/maven-snapshots/")
     }
 }
 

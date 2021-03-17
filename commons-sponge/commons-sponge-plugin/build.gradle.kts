@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     compileOnly("org.spongepowered:spongeapi:7.3.0")
+    compileOnly("org.ow2.asm:asm-all:5.2")
     implementation(project(":commons-server"))
 
     implementation(project(":commons-syntaxes"))

@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly("org.ow2.asm:asm-all:5.2")
     compile("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:1.1.0-SNAPSHOT")//
 

@@ -9,11 +9,12 @@ plugins {
 
 }
 dependencies {
-    compileOnly("net.md-5:bungeecord-api:1.16-R0.5-SNAPSHOT")
+    compileOnly("cn.nukkit:nukkit:1.0-SNAPSHOT")
     compileOnly("org.ow2.asm:asm-all:5.2")
     implementation(project(":commons-server"))
 
     implementation(project(":commons-syntaxes"))
+    implementation("net.md-5:bungeecord-chat:1.16-R0.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

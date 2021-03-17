@@ -2,6 +2,7 @@ package me.scoretwo.utils.sponge.server
 
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.command.GlobalCommandMap
+import me.scoretwo.utils.event.EventManager
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -45,6 +46,8 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
                 nexus.unregisterSpongeCommand()
             }
         }
+        override val eventManager: EventManager
+            get() = TODO("Not yet implemented")
         override fun getPlayer(username: String): Optional<GlobalPlayer> = server.getPlayer(username).let {
             if (it.isPresent) Optional.ofNullable(it.get().toGlobalPlayer()) else Optional.empty<GlobalPlayer>()
         }

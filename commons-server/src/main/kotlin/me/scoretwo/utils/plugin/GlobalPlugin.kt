@@ -11,6 +11,7 @@ interface GlobalPlugin {
     val pluginClassLoader: ClassLoader
     val logger: GlobalLogger
     val description: PluginDescription
+    val name: String get() = description.name
 }
 // pluginName, pluginInstance
 val customPlugins = mutableMapOf<String, GlobalPlugin>()

@@ -30,8 +30,8 @@ fun ConfigurationSection.ignoreCase(path: String): String {
     return path
 }
 
-fun ConfigurationSection.getConfigurationSectionList(path: String, def: List<ConfigurationSection>? = null): List<ConfigurationSection>? = mutableListOf<ConfigurationSection>().also {
-    val list = getList(path) ?: return def
+fun ConfigurationSection.getConfigurationSectionList(path: String, def: List<ConfigurationSection>? = null): List<ConfigurationSection> = mutableListOf<ConfigurationSection>().also {
+    val list = getList(path) ?: return def ?: mutableListOf()
 
     for (raw in list) {
         val yamlConfiguration = YamlConfiguration()

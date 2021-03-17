@@ -79,3 +79,7 @@ MergeBuilder("commons-velocity").also {
     it.merge("plugin")
     it.merge("example")
 }
+
+MergeBuilder("commons-nukkit").also {
+    it.merge("plugin")
+}

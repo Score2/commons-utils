@@ -5,6 +5,7 @@ import me.scoretwo.utils.bungee.plugin.toBungeePlugin
 import me.scoretwo.utils.bungee.plugin.toGlobalPlugin
 import me.scoretwo.utils.command.CommandNexus
 import me.scoretwo.utils.command.GlobalCommandMap
+import me.scoretwo.utils.event.EventManager
 import me.scoretwo.utils.plugin.GlobalPlugin
 import me.scoretwo.utils.sender.GlobalPlayer
 import me.scoretwo.utils.sender.GlobalSender
@@ -42,6 +43,8 @@ fun ProxyServer.toGlobalServer(): GlobalServer = this.let { server ->
                 nexus.unregisterBungeeCommand()
             }
         }
+        override val eventManager: EventManager
+            get() = TODO("Not yet implemented")
         override fun getPlayer(username: String): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(username)?.toGlobalPlayer())
         override fun getPlayer(uniqueId: UUID): Optional<GlobalPlayer> = Optional.ofNullable(server.getPlayer(uniqueId)?.toGlobalPlayer())
         override fun dispatchCommand(sender: GlobalSender, command: String) = try { server.pluginManager.dispatchCommand(sender.toBungeeSender(), command) } catch (e: Throwable) { false }
