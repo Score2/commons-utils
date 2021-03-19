@@ -31,15 +31,20 @@ fun CommandNexus.registerBungeeCommands(): BungeeCommandSet = let { nexus ->
                 })
             }
         }, nexus.alias
-    )
+    ).also {
+        nexus.shadowInstance = it
+    }
 }
 
 fun CommandNexus.unregisterBungeeCommand(): Boolean = this.let { nexus ->
-    if (nexus.shadowInstance == null || nexus.shadowInstance !is Command) {
+    if (nexus.shadowInstance == null || nexus.shadowInstance !is BungeeCommandSet) {
         return@let false
     }
 
-    ProxyServer.getInstance().pluginManager.unregisterCommand(nexus.shadowInstance as Command)
+    (nexus.shadowInstance as BungeeCommandSet).commands.forEach {
+        ProxyServer.getInstance().pluginManager.unregisterCommand(it)
+    }
+
     nexus.shadowInstance = null
     return@let true
 }

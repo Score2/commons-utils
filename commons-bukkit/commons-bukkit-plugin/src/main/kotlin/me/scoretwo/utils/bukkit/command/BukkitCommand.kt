@@ -61,8 +61,16 @@ fun CommandSender.toGlobalSender(): GlobalSender = this.let { sender ->
             override fun sendMessage(text: String) = sender.sendMessage(text)
             override fun sendMessage(texts: Array<String>) = sender.sendMessage(texts)
             override fun hasPermission(name: String): Boolean = sender.hasPermission(name)
-            override fun sendMessage(text: BaseComponent) = sender.spigot().sendMessage(text)
-            override fun sendMessage(vararg texts: BaseComponent) = sender.spigot().sendMessage(*texts)
+            override fun sendMessage(text: BaseComponent) = try {
+                sender.spigot().sendMessage(text)
+            } catch (t: Throwable) {
+                sendMessage(text.toPlainText())
+            }
+            override fun sendMessage(vararg texts: BaseComponent) = try {
+                sender.spigot().sendMessage(*texts)
+            } catch (t: Throwable) {
+                sendMessage(texts.joinToString("") { it.toPlainText() })
+            }
         }
 }
 

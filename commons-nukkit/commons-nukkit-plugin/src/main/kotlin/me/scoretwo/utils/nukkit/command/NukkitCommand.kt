@@ -23,12 +23,13 @@ fun CommandNexus.registerNukkitCommands(): Command = this.let { nexus ->
         throw Exception("This CommandNexus has already been registered!")
     }
     object : Command(nexus.alias[0], "", "/${nexus.alias[0]}", nexus.alias.sliceArray(1 until nexus.alias.size)) {
-
         override fun execute(sender: CommandSender, commandLabel: String, args: Array<out String>): Boolean {
             nexus.execute(sender.toGlobalSender(), mutableListOf(label), args.toMutableList())
             return true
         }
-
+    }.also {
+        Server.getInstance().commandMap.register(alias[0], it)
+        nexus.shadowInstance = it
     }
 }
 

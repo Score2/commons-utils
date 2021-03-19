@@ -47,9 +47,19 @@ abstract class SubCommand(
     fun register(command: SubCommand) = subCommands.add(command)
     fun register(commandBuilder: CommandBuilder) = subCommands.add(commandBuilder.build())
 
+    fun isRegistered(command: SubCommand) = subCommands.contains(command)
+    fun isRegistered(alia: String): Boolean {
+        for (command in subCommands) {
+            if (command.alias.contains(alia)) {
+                return true
+            }
+        }
+        return false
+    }
+
     fun unregister(command: SubCommand) = subCommands.remove(command)
     fun unregister(alia: String): Boolean {
-        for (command in subCommands.toTypedArray()) {
+        for (command in subCommands) {
             if (command.alias.contains(alia)) {
                 subCommands.remove(command)
                 return true

@@ -36,7 +36,7 @@ fun ConfigurationSection.getConfigurationSectionList(path: String, def: List<Con
     for (raw in list) {
         val yamlConfiguration = YamlConfiguration()
         when (raw) {
-            is MemorySection -> it.add(yamlConfiguration)
+            is MemorySection -> it.add(raw)
             is List<*> -> raw.forEach { any ->
                 val args = any.toString().split(Regex(":"), 2)
                 if (args.size == 2) yamlConfiguration.set(args[0], args[1])

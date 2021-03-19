@@ -51,7 +51,7 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         }
         override val eventManager: EventManager
             get() = TODO("Not yet implemented")
-        override fun getPlayer(username: String) = Optional.ofNullable(server.getPlayer(username).toGlobalPlayer())
+        override fun getPlayer(username: String) = Optional.ofNullable(server.getPlayer(username)?.toGlobalPlayer())
         override fun getPlayer(uniqueId: UUID) = Optional.ofNullable(server.getPlayer(uniqueId).getOrNull()?.toGlobalPlayer())
         override fun getOnlinePlayers(): Collection<GlobalPlayer> = mutableListOf<GlobalPlayer>().also { list ->
             server.onlinePlayers.values.mapTo(list) { it.toGlobalPlayer() }
@@ -66,6 +66,8 @@ fun Server.toGlobalServer(): GlobalServer = this.let { server ->
         }
         override fun dispatchCommand(sender: GlobalSender, command: String) = server.dispatchCommand(sender.toNukkitSender(), command)
 
+    }.also {
+        globalServer = it
     }
 }
 
